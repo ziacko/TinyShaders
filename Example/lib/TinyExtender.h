@@ -926,6 +926,8 @@ extern PFNGLVERTEXATTRIBPOINTERPROC __teVertexAttribPointer;
 #define glGetAttribLocation GETFUNCTION(__teGetAttribLocation)
 #define glGetProgramiv GETFUNCTION(__teGetProgramiv)
 #define glGetProgramInfoLog GETFUNCTION(__teGetProgramInfoLog)
+#define glGetShaderiv GETFUNCTION(__teGetShaderiv)
+#define glGetShaderInfoLog GETFUNCTION(__teGetShaderInfoLog)
 #define glGetShaderSource GETFUNCTION(__teGetShaderSource)
 #define glGetUniformLocation GETFUNCTION(__teGetUniformLocation)
 #define glGetUniformfv GETFUNCTION(__teGetUniformfv)
@@ -3555,6 +3557,8 @@ private:
 		glGetAttribLocation = (PFNGLGETATTRIBLOCATIONPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetAttribLocation");
 		glGetProgramiv = (PFNGLGETPROGRAMIVPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetProgramiv");
 		glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetProgramInfoLog");
+		glGetShaderiv = (PFNGLGETSHADERIVPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetShaderiv");
+		glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetShaderInfoLog");
 		glGetShaderSource = (PFNGLGETSHADERSOURCEPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetShaderSource");
 		glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetUniformLocation");
 		glGetUniformfv = (PFNGLGETUNIFORMFVPROC)TinyExtender::GetProcAddress((const GLubyte*)"glGetUniformfv");
@@ -4067,6 +4071,7 @@ private:
 	}
 };
 
+//#if defined(__linux__)
 //OpenGL 1.2 Extensions
 PFNGLDRAWRANGEELEMENTSPROC __teDrawRangeElements = 0;
 PFNGLTEXIMAGE3DPROC __teTexImage3D = 0;
@@ -4681,5 +4686,6 @@ PFNGLBINDVERTEXBUFFERSPROC __teBindVertexBuffers = 0;
 
 GLuint TinyExtender::GLVersion_Major = 0;
 GLuint TinyExtender::GLVersion_Minor = 0;
+//#endif
 
 #endif
