@@ -18,29 +18,158 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct ShaderComponent
+GLchar* FileToBuffer(const GLchar* Path)
 {
-	ShaderComponent(const GLchar* ShaderName, GLuint ShaderType, const GLchar* FilePath) :
-		Name(ShaderName), Type(ShaderType){}
+	FILE* File = fopen(Path, "rt");
+
+	if (File == nullptr)
+	{
+		printf("Error: cannot open file %s for reading \n", Path);
+		return nullptr;
+	}
+
+	//get total byte in given file
+	fseek(File, 0, SEEK_END);
+	GLuint FileLength = ftell(File);
+	fseek(File, 0, SEEK_SET);
+
+	//allocate a file buffer and read the contents of the file
+	char* Buffer = new char[FileLength + 1];
+	memset(Buffer, 0, FileLength + 1);
+	fread(Buffer, sizeof(char), FileLength, File);
+
+	fclose(File);
+	return Buffer;
+}
+
+struct ShaderComponent 
+{
+	ShaderComponent(const GLchar* ShaderName, GLuint ShaderType, const GLchar* ShaderFilePath) :
+		Name(ShaderName), Type(ShaderType)
+	{
+		IsCompiled = GL_FALSE;
+		FilePath = ShaderFilePath;
+		Compile();
+	}
 	ShaderComponent(){}
 	~ShaderComponent(){}
+
+	GLvoid Compile()
+	{
+		if (!IsCompiled)
+		{
+			GLchar ErrorLog[512];
+			GLint Success;
+
+			GLchar* Source = FileToBuffer(FilePath);
+
+			Handle = glCreateShader(Type);
+			glShaderSource(Handle, 1, (const GLchar**)&Source, 0);
+			glCompileShader(Handle);
+
+			glGetShaderiv(Handle, GL_COMPILE_STATUS, &Success);
+			glGetShaderInfoLog(Handle, sizeof(ErrorLog), 0, ErrorLog);
+
+			if (Success != GL_TRUE)
+			{
+				printf("Error: failed to compile shader:\n");
+				printf("%s\n", ErrorLog);
+				return;
+			}
+			IsCompiled = GL_TRUE;
+		}
+
+		else
+		{
+			printf("Error: Shader Component Already compiled \n");
+		}
+
+	}
+
 	const GLchar* Name;
-    const GLchar** Source;
+	const GLchar* FilePath;
 	GLuint Handle, Type;
+	GLboolean IsCompiled;
 };
 
 struct TShader
 {
-		TShader(){};
-		TShader(const GLchar* ShaderName)
+		TShader()
 		{
-			Name = ShaderName;
+			NumInputs = 0;
+			NumOutputs = 0;
+			MaxNumComponents = 5;
+		};
+		TShader(const GLchar* ShaderName, 
+			GLuint NumShaderInputs,
+			GLchar** ShaderInputs, 
+			GLuint NumShaderOutputs,
+			GLchar** ShaderOutputs, 
+			ShaderComponent** Components) : 
+			Name(ShaderName), NumInputs(NumShaderInputs),
+			NumOutputs(NumShaderOutputs)
+		{
+			Inputs.assign(ShaderInputs, ShaderInputs + NumInputs);
+			Outputs.assign(ShaderOutputs, ShaderOutputs + NumOutputs);
+			Compiled = GL_FALSE;
+
+			Compile();
 		};
 
+		TShader(const GLchar* ShaderName){};
+		GLboolean Compile()
+		{
+			Handle = glCreateProgram();
+			GLchar ErrorLog[512];
+			GLint Successful = GL_FALSE;
+			if (!Compiled)
+			{
+
+				for (GLuint Iterator = 0; Iterator < MaxNumComponents; Iterator++)
+				{
+					if (Components[Iterator] != nullptr)
+					{
+						glAttachShader(Handle, Components[Iterator]->Handle);
+					}
+				}
+
+				// specify vertex input attributes
+				for (GLuint i = 0; i < Inputs.size(); ++i)
+				{
+					glBindAttribLocation(Handle, i, Inputs[i]);
+				}
+
+				// specify pixel shader outputs
+				for (GLuint i = 0; i < Outputs.size(); ++i)
+				{
+					glBindFragDataLocation(Handle, i, Outputs[i]);
+				}
+
+				glLinkProgram(Handle);
+				glGetProgramiv(Handle, GL_LINK_STATUS, &Successful);
+				glGetProgramInfoLog(Handle, sizeof(ErrorLog), 0, ErrorLog);
+
+				if (!Successful)
+				{
+					printf("Error: failed to link program %s:\n", Name);
+					printf("%s\n", ErrorLog);
+					return GL_FALSE;
+				}
+
+				return GL_TRUE;
+			}
+
+			return GL_FALSE;
+		}
+
+
 		const GLchar* Name;
-		GLuint GLID;
+		GLuint Handle;
+		GLuint MaxNumComponents;
+		GLboolean Compiled;
+		GLuint NumInputs, NumOutputs;
 		std::vector<const GLchar*> Inputs, Outputs;
-		std::vector<ShaderComponent*> ShaderComponents;
+		std::vector<ShaderComponent*> Components;
 };
 
 class ShaderManager
@@ -172,29 +301,82 @@ class ShaderManager
 			const GLchar* ShaderFile, 
 			GLuint ShaderType)
 		{
-			ShaderComponent* NewComponent = new ShaderComponent();
-			GLint Success;
-			GLchar ErrorLog[512];
-			NewComponent->Name = Name;
-			NewComponent->Type = ShaderType;
-			NewComponent->Source = (const GLchar**)FileToBuffer(ShaderFile);
-			printf("%s \n", NewComponent->Source);
-			NewComponent->Handle = glCreateShader(NewComponent->Type);
-			glShaderSource(NewComponent->Handle, 1, (const GLchar**)&NewComponent->Source, 0);
-			glCompileShader(NewComponent->Handle);
+			ShaderComponent* NewComponent = new ShaderComponent(Name, ShaderType, ShaderFile);
 
-			glGetShaderiv(NewComponent->Handle, GL_COMPILE_STATUS, &Success);
-			glGetShaderInfoLog(NewComponent->Handle, sizeof(ErrorLog), 0, ErrorLog);
-
-			if (Success == GL_TRUE)
+			if (NewComponent->IsCompiled)
 			{
 				GetInstance()->ShaderComponents.push_back(NewComponent);
 			}
+		}
 
-			else
+		static void LoadShadersFromConfigFile(const GLchar* ConfigFile)
+		{
+			FILE* pConfigFile = fopen(ConfigFile, "r+");
+			const GLuint MaxNumComponents = 5;
+			GLint NumInputs, NumOutputs, NumShaders, Iterator;
+
+			std::vector<GLchar*> Inputs, Outputs, Paths, Names;
+
+			if (pConfigFile)
 			{
-				printf("Error: failed to compile shader:\n");
-				printf("%s\n", ErrorLog);
+				fscanf(pConfigFile, "%i\n\n", &NumShaders);
+
+				for (GLint ShaderIter = 0;
+					Iterator != EOF && ShaderIter < NumShaders;
+					NumShaders++, fscanf(pConfigFile, "\n\n"), Paths.clear(), Inputs.clear(), Outputs.clear())
+				{
+					//get the name of the shader
+					GLchar* ShaderName = new GLchar[255];
+					fscanf(pConfigFile, "%s\n", ShaderName);
+
+					//get he number of shader inputs
+					fscanf(pConfigFile, "%i\n", &NumInputs);
+
+					//get all inputs
+					for (Iterator = 0; Iterator < NumInputs; Iterator++)
+					{
+						GLchar* Input = new GLchar[255];
+						Iterator = fscanf(pConfigFile, "%s\n", Input);
+						Inputs.push_back(Input);
+					}
+
+					//get the number of shader outputs
+					fscanf(pConfigFile, "%i\n", &NumInputs);
+
+					//get all outputs
+					for (Iterator = 0; Iterator < NumOutputs; Iterator++)
+					{
+						GLchar* Output = new GLchar[255];
+						Iterator = fscanf(pConfigFile, "%s\n", Output);
+						Outputs.push_back(Output);
+					}
+
+					//get all component Names
+					for (Iterator = 0; Iterator < MaxNumComponents; Iterator++)
+					{
+						GLchar* Name = new GLchar[255];
+						Iterator = fscanf(pConfigFile, "%s\n", Name);
+						Names.push_back(Name);
+					}
+
+					//get all Shader Paths
+					for (Iterator = 0; Iterator < MaxNumComponents; Iterator++)
+					{
+						GLchar* Path = new GLchar[255];
+						Iterator = fscanf(pConfigFile, "%s\n", Path);
+						Paths.push_back(Path);
+					}
+
+					//TShader* NewShader = new TShader(Names[0], GL_VERTEX_SHADER, Paths[0]);
+					ShaderComponent* VertexComponent = new ShaderComponent(Names[0], GL_VERTEX_SHADER, Paths[0]);
+					ShaderComponent* FragmentComponent = new ShaderComponent(Names[1], GL_FRAGMENT_SHADER, Paths[1]);
+					ShaderComponent* GeometryComponent = new ShaderComponent(Name[2], GL_GEOMETRY_SHADER, Paths[2]);
+					ShaderComponent* TessContComponent = new ShaderComponent(Name[3], GL_TESS_CONTROL_SHADER, Paths[3]);
+					ShaderComponent* TessEvalComponent = new ShaderComponent(Names[4], GL_TESS_EVALUATION_SHADER, Paths[4]);
+
+					TShader* NewShader = new TShader()
+
+				}
 			}
 		}
 
@@ -219,48 +401,129 @@ class ShaderManager
 			ShaderComponent* TessContComponent = GetComponentByName(TessContComponentName);
 			ShaderComponent* TessEvalComponent = GetComponentByName(TessEvalComponentName);
 
-			NewShader->GLID = glCreateProgram();
-			if (VertexComponent != nullptr)
+			NewShader->Handle = glCreateProgram();
+			//these components should be compiled already
+			if (VertexComponent != nullptr && VertexComponent->IsCompiled)
 			{
-				glAttachShader(NewShader->GLID, VertexComponent->Handle);
-				NewShader->ShaderComponents.push_back(VertexComponent);
+				glAttachShader(NewShader->Handle, VertexComponent->Handle);
+				NewShader->Components.push_back(VertexComponent);
 			}
 
-			if (FragmentComponent)
+			if (FragmentComponent != nullptr && FragmentComponent->IsCompiled)
 			{
-				glAttachShader(NewShader->GLID, FragmentComponent->Handle);
+				glAttachShader(NewShader->Handle, FragmentComponent->Handle);
+				NewShader->Components.push_back(FragmentComponent);
 			}
 
-			if (GeometryComponent)
+			if (GeometryComponent != nullptr && GeometryComponent->IsCompiled)
 			{
-				glAttachShader(NewShader->GLID, GeometryComponent->Handle);
+				glAttachShader(NewShader->Handle, GeometryComponent->Handle);
+				NewShader->Components.push_back(GeometryComponent);
 			}
 
-			if (TessContComponent)
+			if (TessContComponent != nullptr && TessContComponent->IsCompiled)
 			{
-				glAttachShader(NewShader->GLID, TessContComponent->Handle);
+				glAttachShader(NewShader->Handle, TessContComponent->Handle);
+				NewShader->Components.push_back(TessContComponent);
 			}
 
-			if (TessEvalComponent)
+			if (TessEvalComponent != nullptr && TessEvalComponent->IsCompiled)
 			{
-				glAttachShader(NewShader->GLID, TessEvalComponent->Handle);
+				glAttachShader(NewShader->Handle, TessEvalComponent->Handle);
+				NewShader->Components.push_back(TessEvalComponent);
 			}
 
 			// specify vertex input attributes
 			for (GLuint i = 0; i < NewShader->Inputs.size(); ++i)
 			{
-				glBindAttribLocation(NewShader->GLID, i, NewShader->Inputs[i]);
+				glBindAttribLocation(NewShader->Handle, i, NewShader->Inputs[i]);
 			}
 
 			// specify pixel shader outputs
 			for (GLuint i = 0; i < NewShader->Outputs.size(); ++i)
 			{
-				glBindFragDataLocation(NewShader->GLID, i, NewShader->Outputs[i]);
+				glBindFragDataLocation(NewShader->Handle, i, NewShader->Outputs[i]);
 			}
 
-			glLinkProgram(NewShader->GLID);
-			glGetProgramiv(NewShader->GLID, GL_LINK_STATUS, &Successful);
-			glGetProgramInfoLog(NewShader->GLID, sizeof(ErrorLog), 0, ErrorLog);
+			glLinkProgram(NewShader->Handle);
+			glGetProgramiv(NewShader->Handle, GL_LINK_STATUS, &Successful);
+			glGetProgramInfoLog(NewShader->Handle, sizeof(ErrorLog), 0, ErrorLog);
+
+			if (Successful)
+			{
+				GetInstance()->Shaders.push_back(NewShader);
+			}
+
+			else
+			{
+				printf("Error: failed to link program %s:\n", NewShader->Name);
+				printf("%s\n", ErrorLog);
+			}
+		}
+
+		static void BuildShaderFromComponents(const GLchar* ShaderName,
+			std::vector<const GLchar*> Inputs,
+			std::vector<const GLchar*> Outputs,
+			ShaderComponent* VertexComponent,
+			ShaderComponent* FragmentComponent,
+			ShaderComponent* GeometryComponent,
+			ShaderComponent* TessContComponent,
+			ShaderComponent* TessEvalComponent)
+		{
+			TShader* NewShader = new TShader(ShaderName);
+			GLint Successful = GL_FALSE;
+			GLchar ErrorLog[512];
+
+			NewShader->Inputs = Inputs;
+			NewShader->Outputs = Outputs;
+
+			NewShader->Handle = glCreateProgram();
+			//these components should be compiled already
+			if (VertexComponent != nullptr && VertexComponent->IsCompiled)
+			{
+				glAttachShader(NewShader->Handle, VertexComponent->Handle);
+				NewShader->Components.push_back(VertexComponent);
+			}
+
+			if (FragmentComponent != nullptr && FragmentComponent->IsCompiled)
+			{
+				glAttachShader(NewShader->Handle, FragmentComponent->Handle);
+				NewShader->Components.push_back(FragmentComponent);
+			}
+
+			if (GeometryComponent != nullptr && GeometryComponent->IsCompiled)
+			{
+				glAttachShader(NewShader->Handle, GeometryComponent->Handle);
+				NewShader->Components.push_back(GeometryComponent);
+			}
+
+			if (TessContComponent != nullptr && TessContComponent->IsCompiled)
+			{
+				glAttachShader(NewShader->Handle, TessContComponent->Handle);
+				NewShader->Components.push_back(TessContComponent);
+			}
+
+			if (TessEvalComponent != nullptr && TessEvalComponent->IsCompiled)
+			{
+				glAttachShader(NewShader->Handle, TessEvalComponent->Handle);
+				NewShader->Components.push_back(TessEvalComponent);
+			}
+
+			// specify vertex input attributes
+			for (GLuint i = 0; i < NewShader->Inputs.size(); ++i)
+			{
+				glBindAttribLocation(NewShader->Handle, i, NewShader->Inputs[i]);
+			}
+
+			// specify pixel shader outputs
+			for (GLuint i = 0; i < NewShader->Outputs.size(); ++i)
+			{
+				glBindFragDataLocation(NewShader->Handle, i, NewShader->Outputs[i]);
+			}
+
+			glLinkProgram(NewShader->Handle);
+			glGetProgramiv(NewShader->Handle, GL_LINK_STATUS, &Successful);
+			glGetProgramInfoLog(NewShader->Handle, sizeof(ErrorLog), 0, ErrorLog);
 
 			if (Successful)
 			{
@@ -278,29 +541,6 @@ class ShaderManager
 		
 		void Shutdown(){}		
 
-		static GLchar* FileToBuffer(const GLchar* Path)
-		{
-			FILE* File = fopen(Path, "rt");
-
-			if (File == nullptr)
-			{
-				printf("Error: cannot open file %s for reading \n", Path);
-				return nullptr;
-			}
-
-			//get total byte in given file
-			fseek(File, 0, SEEK_END);
-			GLuint FileLength = ftell(File);
-			fseek(File, 0, SEEK_SET);
-
-			//allocate a file buffer and read the contents of the file
-			char* Buffer = new char[FileLength + 1];
-			memset(Buffer, 0, FileLength + 1);
-			fread(Buffer, sizeof(char), FileLength, File);
-
-			fclose(File);
-			return Buffer;
-		}
 
 		GLuint StringToShaderType(const char* TypeString)
 		{
@@ -365,6 +605,8 @@ class ShaderManager
 					return NULL;
 				}
 			}
+
+			return nullptr;
 		}
 
 		std::vector<TShader*> Shaders;
