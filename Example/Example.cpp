@@ -1,12 +1,12 @@
 #include <TinyExtender.h>
-#include <ShaderManager.h>
+#include <TinyShaders.h>
 #include <TinyWindow.h>
 
 int main()
 {
 	WindowManager::Initialize();
 	
-	WindowManager::AddWindow("Shader Manager Example");
+	WindowManager::AddWindow("Example");
 	TinyExtender::InitializeExtensions();
 
 	ShaderManager::LoadShaderComponent("Vertex Test",
@@ -19,7 +19,7 @@ int main()
 	std::vector<const GLchar*> Inputs, Outputs;
 	Inputs.push_back("Position");
 	Inputs.push_back("UV");
-	Outputs.push_back("outColor");
+	Outputs.push_back("outColour");
 
 	ShaderManager::BuildShaderFromComponents("Shader Test",
 		Inputs,
@@ -30,16 +30,16 @@ int main()
 		nullptr,
 		nullptr);
 
-	glUseProgram(ShaderManager::GetShaders()[0]->Handle);
-
+	glUseProgram(ShaderManager::GetShaderByIndex(0)->Handle);
+	
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-	glPointSize(10.0f);
-	while (!WindowManager::GetWindowShouldClose("Shader Manager Example"))
+	glPointSize(20.0f);
+	while (!WindowManager::GetWindowShouldClose("Example"))
 	{
 		WindowManager::PollForEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_POINTS, 0, 1);
-		WindowManager::WindowSwapBuffers("Shader Manager Example");
+		WindowManager::WindowSwapBuffers("Example");
 	}
 	WindowManager::ShutDown();
 

@@ -11,17 +11,11 @@ in vec2 UV;
 out vec4 vPosition;
 out vec2 vUV;
 
-uniform mat4 Projection;
-uniform mat4 View;
-uniform mat4 Model;
-uniform float Time;
-uniform float Interpolation;
-
-uniform mat4 Bones[128];
+uniform vec2 Test;
 
 void main()
 {
 	vUV = UV;
 	vPosition = Position;
-	gl_Position = vec4(0.95f, 0.65f, 0.5f, 1.0f);
+	gl_Position = vec4(0.0f, 0.0f, 0.5f, 1.0f);
 }

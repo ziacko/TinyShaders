@@ -2,9 +2,11 @@
 in vec2 vUV;
 in vec4 vPosition;
 
-layout (location = 0) out vec4 outColour;
+out vec4 outColour;
+
+uniform vec4 TestColor;
 
 void main()
 {
-	outColour = vec4(1, 0.25f, 0.25f, 1.0f);
+	outColour = vec4(255, 0, 255, 1);
 }

@@ -3110,9 +3110,13 @@ public:
 	{
 		if (GetInstance()->IsInitialized())
 		{
-			GetMessage(&GetInstance()->m_Message, 0, 0, 0);
-			TranslateMessage(&GetInstance()->m_Message);
-			DispatchMessage(&GetInstance()->m_Message);
+			if (PeekMessage(&GetInstance()->m_Message, 0, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&GetInstance()->m_Message);
+				DispatchMessage(&GetInstance()->m_Message);
+
+				return FOUNDATION_OKAY;
+			}
 			return FOUNDATION_OKAY;
 		}
 
