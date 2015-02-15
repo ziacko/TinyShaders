@@ -917,6 +917,7 @@ extern PFNGLVERTEXATTRIBPOINTERPROC __teVertexAttribPointer;
 #define glCreateProgram GETFUNCTION(__teCreateProgram)
 #define glCreateShader GETFUNCTION(__teCreateShader)
 #define glDeleteProgram GETFUNCTION(__teDeleteProgram)
+#define glDeleteShader GETFUNCTION(__teDeleteShader)
 #define glDetachShader GETFUNCTION(__teDetachShader)
 #define glDisableVertexAttribArray GETFUNCTION(__teDisableVertexAttribArray)
 #define glEnableVertexAttribArray GETFUNCTION(__teEnableVertexAttribArray)
@@ -3548,6 +3549,7 @@ private:
 		glCreateProgram = (PFNGLCREATEPROGRAMPROC)TinyExtender::GetProcAddress((const GLubyte*)"glCreateProgram");
 		glCreateShader = (PFNGLCREATESHADERPROC)TinyExtender::GetProcAddress((const GLubyte*)"glCreateShader");
 		glDeleteProgram = (PFNGLDELETEPROGRAMPROC)TinyExtender::GetProcAddress((const GLubyte*)"glDeleteProgram");
+		glDeleteShader = (PFNGLDELETESHADERPROC)TinyExtender::GetProcAddress((const GLubyte*)"glDeleteShader");
 		glDetachShader = (PFNGLDETACHSHADERPROC)TinyExtender::GetProcAddress((const GLubyte*)"glDetachShader");
 		glDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC)TinyExtender::GetProcAddress((const GLubyte*)"glDisableVertexAttribArray");
 		glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)TinyExtender::GetProcAddress((const GLubyte*)"glEnableVertexAttribArray");
