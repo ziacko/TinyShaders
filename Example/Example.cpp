@@ -1,12 +1,12 @@
 #include <TinyExtender.h>
 #include <TinyShaders.h>
-#include <TinyWindow.h>
+#include <WindowManager.h>
 
 int main()
 {
 	WindowManager::Initialize();
 	
-	WindowManager::AddWindow("Example");
+	WindowManager::AddWindow(new FWindow("Example"));
 	TinyExtender::InitializeExtensions();
 
 	ShaderManager::LoadShadersFromConfigFile("Shaders/Shaders.txt");

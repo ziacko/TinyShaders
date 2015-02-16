@@ -1,0 +1,5 @@
+In file included from Example.cpp:1:0:
+./lib/TinyExtender.h: In static member function ‘static void* TinyExtender::GetProcAddress(const GLubyte*)’:
+./lib/TinyExtender.h:4071:36: warning: invalid conversion from ‘void (*)()’ to ‘void*’ [-fpermissive]
+   return glXGetProcAddress(ProcName);
+                                    ^

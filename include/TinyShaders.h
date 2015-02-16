@@ -152,7 +152,7 @@ class ShaderManager
 					if (!GetInstance()->ShaderExists(ShaderName))
 					{
 
-						//get he number of shader inputs
+						//get the number of shader inputs
 						fscanf(pConfigFile, "%i\n", &NumInputs);
 
 						//get all inputs
@@ -304,7 +304,7 @@ class ShaderManager
 					if (!IsCompiled)
 					{
 						GLchar ErrorLog[512];
-						GLint Success;
+						GLint Successful = GL_FALSE;
 						GLchar* Source = GetInstance()->FileToBuffer(FilePath);
 
 						if (Source != nullptr)
@@ -313,10 +313,10 @@ class ShaderManager
 							glShaderSource(Handle, 1, (const GLchar**)&Source, 0);
 							glCompileShader(Handle);
 
-							glGetShaderiv(Handle, GL_COMPILE_STATUS, &Success);
+							glGetShaderiv(Handle, GL_COMPILE_STATUS, &Successful);
 							glGetShaderInfoLog(Handle, sizeof(ErrorLog), 0, ErrorLog);
 
-							if (Success != GL_TRUE)
+							if (Successful != GL_TRUE)
 							{
 								printf("Error: failed to compile %s shader component:\n", GetInstance()->ShaderTypeToString(Type));
 								printf("%s\n", ErrorLog);
@@ -449,23 +449,17 @@ class ShaderManager
 			{
 				if (ComponentName != nullptr)
 				{
-#if defined(_MSC_VER)
+#if defined(_WIN32)
 					for each(auto Iter in GetInstance()->ShaderComponents)
-					{
-						if (!strcmp(ComponentName, Iter->Name))
-						{
-							return Iter;
-						}
-					}
 #elif defined(__linux__)
 					for (auto Iter : GetInstance()->ShaderComponents)
+#endif
 					{
 						if (!strcmp(ComponentName, Iter->Name))
 						{
 							return Iter;
 						}
 					}
-#endif
 					return nullptr;
 				}
 				return nullptr;
@@ -473,7 +467,11 @@ class ShaderManager
 
 		static TShaderComponent* GetComponentByIndex(GLuint ComponentIndex)
 			{
+#if defined(_WIN32)
 				for each(auto Iter in GetInstance()->ShaderComponents)
+#elif defined(__linux__)
+				for (auto Iter : GetInstance()->ShaderComponents)
+#endif
 				{
 					if (Iter->Handle == ComponentIndex)
 					{
