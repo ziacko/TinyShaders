@@ -421,7 +421,7 @@ class TinyShaders
 					if (!IsCompiled)
 					{
 						GLchar ErrorLog[512];
-						GLint Success;
+						GLint Successful;
 						GLchar* Source = GetInstance()->FileToBuffer(FilePath);
 
 						if (Source != nullptr)
@@ -430,10 +430,10 @@ class TinyShaders
 							glShaderSource(Handle, 1, (const GLchar**)&Source, 0);
 							glCompileShader(Handle);
 
-							glGetShaderiv(Handle, GL_COMPILE_STATUS, &Success);
+							glGetShaderiv(Handle, GL_COMPILE_STATUS, &Successful);
 							glGetShaderInfoLog(Handle, sizeof(ErrorLog), 0, ErrorLog);
 
-							if (Success != GL_TRUE)
+							if (Successful != GL_TRUE)
 							{
 								PrintErrorMessage(TSHADERS_ERROR_FAILEDSHADERLOAD, GetInstance()->ShaderTypeToString(Type));
 								printf("%s\n", ErrorLog);
