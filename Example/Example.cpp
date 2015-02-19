@@ -9,6 +9,7 @@ int main()
 	WindowManager::AddWindow("Example");
 	TinyExtender::InitializeExtensions();
 
+	//the shader manager doesnt actually need to be initialized
 	ShaderManager::LoadShadersFromConfigFile("Shaders/Shaders.txt");
 	glUseProgram(ShaderManager::GetShaderByIndex(0)->Handle);
 	
