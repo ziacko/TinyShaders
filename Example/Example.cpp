@@ -1,15 +1,15 @@
 #include <TinyExtender.h>
 #include <TinyShaders.h>
-#include <WindowManager.h>
+#include <TinyWindow.h>
 
 int main()
 {
 	WindowManager::Initialize();
 	
-	WindowManager::AddWindow(new FWindow("Example"));
+	WindowManager::AddWindow("Example");
 	TinyExtender::InitializeExtensions();
 
-	//the shader manager doesnt actually need to be initialized
+	//the shader manager doesn't actually need to be initialized
 	TinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt");
 	glUseProgram(TinyShaders::GetShaderProgramByIndex(0)->Handle);
 	
