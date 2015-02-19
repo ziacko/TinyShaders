@@ -203,8 +203,16 @@ class ShaderManager
 						GLchar* ShaderName = new GLchar[255];
 						fscanf(pConfigFile, "%s\n", ShaderName);
 
+<<<<<<< HEAD
 						//this is an anti-trolling measure. If a shader with the same name already exists the don't bother making a new one.
 						if (!GetInstance()->ShaderExists(ShaderName))
+=======
+						//get the number of shader inputs
+						fscanf(pConfigFile, "%i\n", &NumInputs);
+
+						//get all inputs
+						for (Iterator = 0; Iterator < NumInputs; Iterator++)
+>>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
 						{
 
 							//get he number of shader inputs
@@ -396,7 +404,7 @@ class ShaderManager
 					if (!IsCompiled)
 					{
 						GLchar ErrorLog[512];
-						GLint Success;
+						GLint Successful = GL_FALSE;
 						GLchar* Source = GetInstance()->FileToBuffer(FilePath);
 
 						if (Source != nullptr)
@@ -405,10 +413,10 @@ class ShaderManager
 							glShaderSource(Handle, 1, (const GLchar**)&Source, 0);
 							glCompileShader(Handle);
 
-							glGetShaderiv(Handle, GL_COMPILE_STATUS, &Success);
+							glGetShaderiv(Handle, GL_COMPILE_STATUS, &Successful);
 							glGetShaderInfoLog(Handle, sizeof(ErrorLog), 0, ErrorLog);
 
-							if (Success != GL_TRUE)
+							if (Successful != GL_TRUE)
 							{
 								PrintErrorMessage(TSHADERS_ERROR_FAILEDCOMPONENTLOAD, GetInstance()->ShaderTypeToString(Type));
 								printf("%s\n", ErrorLog);
@@ -613,13 +621,29 @@ class ShaderManager
 			{
 				if (String != nullptr)
 				{
+<<<<<<< HEAD
 					printf("Error: failed to link program %s \n", String);
+=======
+#if defined(_WIN32)
+					for each(auto Iter in GetInstance()->ShaderComponents)
+#elif defined(__linux__)
+					for (auto Iter : GetInstance()->ShaderComponents)
+#endif
+					{
+						if (!strcmp(ComponentName, Iter->Name))
+						{
+							return Iter;
+						}
+					}
+					return nullptr;
+>>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
 				}
 				break;
 			}
 
 			case TSHADERS_ERROR_COMPONENTEXISTS:
 			{
+<<<<<<< HEAD
 				printf("Error: shader component with this name %s already exists \n", String);
 				break;
 			}
@@ -627,6 +651,13 @@ class ShaderManager
 			case TSHADERS_ERROR_SHADEREXISTS:
 			{
 				if (String != nullptr)
+=======
+#if defined(_WIN32)
+				for each(auto Iter in GetInstance()->ShaderComponents)
+#elif defined(__linux__)
+				for (auto Iter : GetInstance()->ShaderComponents)
+#endif
+>>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
 				{
 					printf("Error: shader with this name %s already exists \n", String);
 					break;
