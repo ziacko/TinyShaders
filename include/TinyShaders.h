@@ -1,7 +1,7 @@
 #ifndef SHADERMANAGER_H_
 #define SHADERMANAGER_H_
 #if defined(_WIN32) || defined(_WIN64)
-//created by ziyad barakat 2015
+//created by ziyad barakat-2015
 #include <Windows.h>
 #include <gl/GL.h>
 #define _CRT_SECURE_NO_WARNINGS 1
@@ -21,72 +21,106 @@
 
 #define TSHADERS_ERROR_NOTINITIALIZED 1
 #define TSHADERS_ERROR_INVALIDSTRING 2
-#define TSHADERS_ERROR_INVALIDSHADERNAME 3
-#define TSHADERS_ERROR_INVALIDSHADERINDEX 4
-#define TSHADERS_ERROR_INVALIDCOMPONENTNAME 5
-#define TSHADERS_ERROR_INVALIDCOMPONENTINDEX 6
+#define TSHADERS_ERROR_INVALIDSHADERPROGRAMNAME 3
+#define TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX 4
+#define TSHADERS_ERROR_INVALIDSHADERNAME 5
+#define TSHADERS_ERROR_INVALIDSHADERINDEX 6
 #define TSHADERS_ERROR_INVALIDFILEPATH 7
-#define TSHADERS_ERROR_SHADERNOTFOUND 8
-#define TSHADERS_ERROR_COMPONENTNOTFOUND 9
+#define TSHADERS_ERROR_SHADERPROGRAMNOTFOUND 8
+#define TSHADERS_ERROR_SHADERNOTFOUND 9
 #define TSHADERS_ERROR_INVALIDSHADERTYPE 10
-#define TSHADERS_ERROR_FAILEDCOMPONENTLOAD 11
-#define TSHADERS_ERROR_FAILEDSHADERLINK 12
-#define TSHADERS_ERROR_COMPONENTEXISTS 13
-#define TSHADERS_ERROR_SHADEREXISTS 14
+#define TSHADERS_ERROR_FAILEDSHADERLOAD 11
+#define TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK 12
+#define TSHADERS_ERROR_SHADEREXISTS 13
+#define TSHADERS_ERROR_SHADERPROGRAMEXISTS 14
 #define TSHADERS_ERROR_INVALIDSOURCEFILE 15
 
-
-#define TSHADERS_WARNING_COMPONENTALREADYEXISTS 1
-#define TSHADERS_WARNING_SHADERALREADYEXISTS 2
-
-class ShaderManager
+class TinyShaders
 {
+	struct TShaderProgram;
 	struct TShader;
-	struct TShaderComponent;
 
 	public:
 
-		ShaderManager(){}
-		~ShaderManager(){}
+		TinyShaders(){}
+		~TinyShaders(){}
 
+		/*
+		* shuts down TinyShaders. deletes all OpenGL shaders and shader programs 
+		* as well as calling shutdown on all shader and programs and clears all vectors.
+		*/
 		static void Shutdown()
 		{
-			if (ShaderManager::IsInitialized)
+			if (TinyShaders::IsInitialized)
 			{
-				for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderComponents.size(); Iterator++)
-				{
-					GetInstance()->ShaderComponents[Iterator]->Shutdown();
-					 delete GetInstance()->ShaderComponents[Iterator];
-				}
-
 				for (GLuint Iterator = 0; Iterator < GetInstance()->Shaders.size(); Iterator++)
 				{
 					GetInstance()->Shaders[Iterator]->Shutdown();
-					delete GetInstance()->Shaders[Iterator];
+					 delete GetInstance()->Shaders[Iterator];
 				}
 
+				for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderPrograms.size(); Iterator++)
+				{
+					GetInstance()->ShaderPrograms[Iterator]->Shutdown();
+					delete GetInstance()->ShaderPrograms[Iterator];
+				}
+
+				GetInstance()->ShaderPrograms.clear();
 				GetInstance()->Shaders.clear();
-				GetInstance()->ShaderComponents.clear();
 
 				delete Instance;
 			}
 		}
 
-		static ShaderManager* GetInstance()
+		/*
+		* returns a pointer to a TShaderProgram corresponding to the given name. returns nullptr if the TShaderProgram is not found
+		*/
+		static TShaderProgram* GetShaderProgramByName(const char* ProgramName)
 		{
-			if (ShaderManager::IsInitialized)
+			if (TinyShaders::IsInitialized)
 			{
-				return ShaderManager::Instance;
+				if (ProgramName != nullptr)
+				{
+					for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderPrograms.size(); Iterator++)
+					{
+						if (!strcmp(GetInstance()->ShaderPrograms[Iterator]->Name, ProgramName))
+						{
+							return GetInstance()->ShaderPrograms[Iterator];
+						}
+					}
+					return nullptr;
+				}
+				PrintErrorMessage(TSHADERS_ERROR_SHADERPROGRAMNOTFOUND);
+				return nullptr;
 			}
-
-			ShaderManager::IsInitialized = GL_TRUE;
-			ShaderManager::Instance = new ShaderManager();
-			return ShaderManager::Instance;
+			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
+			return nullptr;
 		}
 
-		static TShader* GetShaderByName(const char* ShaderName)
+		/*
+		* returns a pointer to a TShaderProgram corresponding to the given index. returns nullptr if the TShaderProgram is not found
+		*/
+		static TShaderProgram* GetShaderProgramByIndex(GLuint ProgramIndex)
 		{
-			if (ShaderManager::IsInitialized)
+			if (TinyShaders::IsInitialized)
+			{
+				if (ProgramIndex <= GetInstance()->ShaderPrograms.size() - 1)
+				{
+					return GetInstance()->ShaderPrograms[ProgramIndex];
+				}
+				PrintErrorMessage(TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX);
+				return nullptr;
+			}
+			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
+			return nullptr;
+		}
+
+		/*
+		* returns a pointer to a TShader corresponding to the given name. returns nullptr if the TShader is not found
+		*/
+		static TShader* GetShaderByName(const GLchar* ShaderName)
+		{
+			if (TinyShaders::IsInitialized)
 			{
 				if (ShaderName != nullptr)
 				{
@@ -97,18 +131,22 @@ class ShaderManager
 							return GetInstance()->Shaders[Iterator];
 						}
 					}
+					PrintErrorMessage(TSHADERS_ERROR_SHADERNOTFOUND);
 					return nullptr;
 				}
-				PrintErrorMessage(TSHADERS_ERROR_SHADERNOTFOUND);
+				PrintErrorMessage(TSHADERS_ERROR_INVALIDSHADERNAME);
 				return nullptr;
 			}
 			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
 			return nullptr;
 		}
 
+		/*
+		* return a pointer to a TShader corresponding to the given index. returns nullptr if the TShader is not found
+		*/
 		static TShader* GetShaderByIndex(GLuint ShaderIndex)
 		{
-			if (ShaderManager::IsInitialized)
+			if (TinyShaders::IsInitialized)
 			{
 				if (ShaderIndex <= GetInstance()->Shaders.size() - 1)
 				{
@@ -121,55 +159,20 @@ class ShaderManager
 			return nullptr;
 		}
 
-		static TShaderComponent* GetComponentByName(const GLchar* ComponentName)
-		{
-			if (ShaderManager::IsInitialized)
-			{
-				if (ComponentName != nullptr)
-				{
-					for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderComponents.size(); Iterator++)
-					{
-						if (!strcmp(GetInstance()->ShaderComponents[Iterator]->Name, ComponentName))
-						{
-							return GetInstance()->ShaderComponents[Iterator];
-						}
-					}
-					PrintErrorMessage(TSHADERS_ERROR_COMPONENTNOTFOUND);
-					return nullptr;
-				}
-				PrintErrorMessage(TSHADERS_ERROR_INVALIDCOMPONENTNAME);
-				return nullptr;
-			}
-			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
-			return nullptr;
-		}
-
-		static TShaderComponent* GetComponentByIndex(GLuint ComponentIndex)
-		{
-			if (ShaderManager::IsInitialized)
-			{
-				if (ComponentIndex <= GetInstance()->ShaderComponents.size() - 1)
-				{
-					return GetInstance()->ShaderComponents[ComponentIndex];
-				}
-				PrintErrorMessage(TSHADERS_ERROR_INVALIDCOMPONENTINDEX);
-				return nullptr;
-			}
-			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
-			return nullptr;
-		}
-
-		static void LoadShaderComponent(const GLchar* Name, 
+		/*
+		* load an OpenGL shader
+		*/
+		static void LoadShader(const GLchar* Name, 
 			const GLchar* ShaderFile, 
 			GLuint ShaderType)
 		{
-			if (ShaderManager::IsInitialized)
+			if (TinyShaders::IsInitialized)
 			{
 				if (Name != nullptr)
 				{
 					if (ShaderType >= 0 && ShaderType <= 5)
 					{
-						TShaderComponent* NewComponent = new TShaderComponent(Name, ShaderType, ShaderFile);
+						TShader* NewShader = new TShader(Name, ShaderType, ShaderFile);
 					}
 					PrintErrorMessage(TSHADERS_ERROR_INVALIDSHADERTYPE, GetInstance()->ShaderTypeToString(ShaderType));
 				}
@@ -178,41 +181,36 @@ class ShaderManager
 			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
 		}
 
-		static void LoadShadersFromConfigFile(const GLchar* ConfigFile)
+		/*
+		* loads all shaders and shader programs specified in a custom configuration file
+		*/
+		static void LoadShaderProgramsFromConfigFile(const GLchar* ConfigFile)
 		{
-			if (!ShaderManager::IsInitialized)
+			if (!TinyShaders::IsInitialized)
 			{
 				FILE* pConfigFile = fopen(ConfigFile, "r");
-				const GLuint MaxNumComponents = 5;
 				GLuint NumInputs = 0;
 				GLuint NumOutputs = 0;
-				GLuint NumShaders = 0;
+				GLuint NumPrograms = 0;
 				GLuint Iterator = 0;
 
 				std::vector<const GLchar*> Inputs, Outputs, Paths, Names;
 
 				if (pConfigFile)
 				{
-					fscanf(pConfigFile, "%i\n\n", &NumShaders);
+					//get the total number of shader programs
+					fscanf(pConfigFile, "%i\n\n", &NumPrograms);
 
-					for (GLuint ShaderIter = 0;
-						ShaderIter < NumShaders;
-						ShaderIter++, fscanf(pConfigFile, "\n\n"), Paths.clear(), Inputs.clear(), Outputs.clear(), Names.clear())
+					for (GLuint ProgramIter = 0;
+						ProgramIter < NumPrograms;
+						ProgramIter++, fscanf(pConfigFile, "\n\n"), Paths.clear(), Inputs.clear(), Outputs.clear(), Names.clear())
 					{
-						//get the name of the shader
-						GLchar* ShaderName = new GLchar[255];
-						fscanf(pConfigFile, "%s\n", ShaderName);
+						//get the name of the shader program 
+						GLchar* ProgramName = new GLchar[255];
+						fscanf(pConfigFile, "%s\n", ProgramName);
 
-<<<<<<< HEAD
 						//this is an anti-trolling measure. If a shader with the same name already exists the don't bother making a new one.
-						if (!GetInstance()->ShaderExists(ShaderName))
-=======
-						//get the number of shader inputs
-						fscanf(pConfigFile, "%i\n", &NumInputs);
-
-						//get all inputs
-						for (Iterator = 0; Iterator < NumInputs; Iterator++)
->>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
+						if (!GetInstance()->ShaderProgramExists(ProgramName))
 						{
 
 							//get he number of shader inputs
@@ -238,7 +236,7 @@ class ShaderManager
 							}
 
 							//get all component Names
-							for (Iterator = 0; Iterator < MaxNumComponents; Iterator++)
+							for (Iterator = 0; Iterator < TShaderProgram::MaxNumShaders; Iterator++)
 							{
 								GLchar* Name = new GLchar[255];
 								fscanf(pConfigFile, "%s\n", Name);
@@ -246,66 +244,70 @@ class ShaderManager
 							}
 
 							//get all Shader Paths
-							for (Iterator = 0; Iterator < MaxNumComponents; Iterator++)
+							for (Iterator = 0; Iterator < TShaderProgram::MaxNumShaders; Iterator++)
 							{
 								GLchar* Path = new GLchar[255];
 								fscanf(pConfigFile, "%s\n", Path);
 								Paths.push_back(Path);
 							}
 
-							std::vector<TShaderComponent*> Components;
+							std::vector<TShader*> Shaders;
 
-							for (GLuint ComponentIterator = 0; ComponentIterator < MaxNumComponents; ComponentIterator++)
+							for (GLuint ShaderIterator = 0; ShaderIterator < TShaderProgram::MaxNumShaders; ShaderIterator++)
 							{
-								if (strcmp(Names[ComponentIterator], "None") != 0)
+								if (strcmp(Names[ShaderIterator], "None") != 0)
 								{
-									if (!GetInstance()->ShaderComponentExists(Names[ComponentIterator]))
+									if (!GetInstance()->ShaderExists(Names[ShaderIterator]))
 									{
 										//If a shader component of the same name doesn't exist then compile it and add it to storage
-										switch (ComponentIterator)
+										switch (ShaderIterator)
 										{
 										case 0:
 										{
-											Components.push_back(new TShaderComponent(Names[ComponentIterator], GL_VERTEX_SHADER, Paths[ComponentIterator]));
+											Shaders.push_back(new TShader(Names[ShaderIterator], GL_VERTEX_SHADER, Paths[ShaderIterator]));
 											break;
 										}
 
 										case 1:
 										{
-											Components.push_back(new TShaderComponent(Names[ComponentIterator], GL_FRAGMENT_SHADER, Paths[ComponentIterator]));
+											Shaders.push_back(new TShader(Names[ShaderIterator], GL_FRAGMENT_SHADER, Paths[ShaderIterator]));
 											break;
 										}
 
 										case 2:
 										{
-											Components.push_back(new TShaderComponent(Names[ComponentIterator], GL_GEOMETRY_SHADER, Paths[ComponentIterator]));
+											Shaders.push_back(new TShader(Names[ShaderIterator], GL_GEOMETRY_SHADER, Paths[ShaderIterator]));
 											break;
 
 										}
 
 										case 3:
 										{
-											Components.push_back(new TShaderComponent(Names[ComponentIterator], GL_TESS_CONTROL_SHADER, Paths[ComponentIterator]));
+											Shaders.push_back(new TShader(Names[ShaderIterator], GL_TESS_CONTROL_SHADER, Paths[ShaderIterator]));
 											break;
 										}
 
 										case 4:
 										{
-											Components.push_back(new TShaderComponent(Names[ComponentIterator], GL_TESS_EVALUATION_SHADER, Paths[ComponentIterator]));
+											Shaders.push_back(new TShader(Names[ShaderIterator], GL_TESS_EVALUATION_SHADER, Paths[ShaderIterator]));
 											break;
 										}
+
+										default:
+										{
+											break;
 										}
-										
+										}										
 									}
 
 									else
 									{
 										//If one already exists then dig that one out from storage and attach it to the shader. It should already be compiled!
-										Components.push_back(GetComponentByName(Names[ComponentIterator]));
+										Shaders.push_back(GetShaderByName(Names[ShaderIterator]));
 									}
 								}
 							}
-							TShader* NewShader = new TShader(ShaderName, Inputs, Outputs, Components);
+							TShaderProgram* NewShader = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
 						}
 					}
 					fclose(pConfigFile);
@@ -318,39 +320,45 @@ class ShaderManager
 			}
 		}
 
-		static void BuildShaderFromComponents(const GLchar* ShaderName,
+		/*
+		* builds a new OpenGL shader program from already loaded shaders
+		*/
+		static void BuildProgramFromShaders(const GLchar* ShaderName,
 			std::vector<const GLchar*> Inputs,
 			std::vector<const GLchar*> Outputs,
-			const GLchar* VertexComponentName,
-			const GLchar* FragmentComponentName,
-			const GLchar* GeometryComponentName,
-			const GLchar* TessContComponentName,
-			const GLchar* TessEvalComponentName)
+			const GLchar* VertexShaderName,
+			const GLchar* FragmentShaderName,
+			const GLchar* GeometryShaderName,
+			const GLchar* TessContShaderName,
+			const GLchar* TessEvalShaderName)
 		{
-			if (ShaderManager::IsInitialized)
+			if (TinyShaders::IsInitialized)
 			{
-				std::vector<TShaderComponent*> Components;
-				Components.push_back(GetComponentByName(VertexComponentName));
-				Components.push_back(GetComponentByName(FragmentComponentName));
-				Components.push_back(GetComponentByName(GeometryComponentName));
-				Components.push_back(GetComponentByName(TessContComponentName));
-				Components.push_back(GetComponentByName(TessEvalComponentName));
+				std::vector<TShader*> Shaders;
+				Shaders.push_back(GetShaderByName(VertexShaderName));
+				Shaders.push_back(GetShaderByName(FragmentShaderName));
+				Shaders.push_back(GetShaderByName(GeometryShaderName));
+				Shaders.push_back(GetShaderByName(TessContShaderName));
+				Shaders.push_back(GetShaderByName(TessEvalShaderName));
 
-				TShader* NewShader = new TShader(ShaderName, Inputs, Outputs, Components);
+				TShaderProgram* NewShaderProgram = new TShaderProgram(ShaderName, Inputs, Outputs, Shaders);
 			}
 			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
 		}
 
-		static GLboolean ShaderExists(const GLchar* ShaderName)
+		/*
+		* check if the shader program exists in TinyShaders.(has it been loaded and initialized?)
+		*/
+		static GLboolean ShaderProgramExists(const GLchar* ShaderName)
 		{
 			if (ShaderName != nullptr)
 			{
-				if (!GetInstance()->Shaders.empty())
+				if (!GetInstance()->ShaderPrograms.empty())
 				{
-					for (GLuint Iterator = 0; Iterator < GetInstance()->Shaders.size(); Iterator++)
+					for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderPrograms.size(); Iterator++)
 					{
-						if (GetInstance()->Shaders[Iterator] != nullptr &&
-							!strcmp(ShaderName, GetInstance()->Shaders[Iterator]->Name))
+						if (GetInstance()->ShaderPrograms[Iterator] != nullptr &&
+							!strcmp(ShaderName, GetInstance()->ShaderPrograms[Iterator]->Name))
 						{
 							return GL_TRUE;
 						}
@@ -362,16 +370,19 @@ class ShaderManager
 			return GL_FALSE;
 		}
 
-		static GLboolean ShaderComponentExists(const GLchar* ShaderComponentName)
+		/*
+		* check if the shader exists in TinyShaders. (has it been loaded and initialized?)
+		*/
+		static GLboolean ShaderExists(const GLchar* ShaderName)
 		{
-			if (ShaderComponentName != nullptr)
+			if (ShaderName != nullptr)
 			{
-				if (!GetInstance()->ShaderComponents.empty())
+				if (!GetInstance()->Shaders.empty())
 				{
-					for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderComponents.size(); Iterator++)
+					for (GLuint Iterator = 0; Iterator < GetInstance()->Shaders.size(); Iterator++)
 					{
-						if (GetInstance()->ShaderComponents[Iterator] != nullptr && 
-							!strcmp(ShaderComponentName, GetInstance()->ShaderComponents[Iterator]->Name))
+						if (GetInstance()->Shaders[Iterator] != nullptr && 
+							!strcmp(ShaderName, GetInstance()->Shaders[Iterator]->Name))
 						{
 							return GL_TRUE;
 						}
@@ -385,9 +396,12 @@ class ShaderManager
 
 	private:
 
-		struct TShaderComponent
+		/*
+		* a TShader is essentially an OpenGL shader
+		*/
+		struct TShader
 			{
-				TShaderComponent(const GLchar* ShaderName, GLuint ShaderType, const GLchar* ShaderFilePath) :
+				TShader(const GLchar* ShaderName, GLuint ShaderType, const GLchar* ShaderFilePath) :
 					Name(ShaderName)
 				{
 					Type = ShaderType;
@@ -395,16 +409,19 @@ class ShaderManager
 					FilePath = ShaderFilePath;
 					Compile();
 				}
-				TShaderComponent(){}
-				~TShaderComponent(){}
+				TShader(){}
+				~TShader(){}
 
+				/*
+				* compile the shader with the given information
+				*/
 				GLvoid Compile()
 				{
 					//if the component hasn't been compiled yet
 					if (!IsCompiled)
 					{
 						GLchar ErrorLog[512];
-						GLint Successful = GL_FALSE;
+						GLint Successful;
 						GLchar* Source = GetInstance()->FileToBuffer(FilePath);
 
 						if (Source != nullptr)
@@ -418,15 +435,15 @@ class ShaderManager
 
 							if (Successful != GL_TRUE)
 							{
-								PrintErrorMessage(TSHADERS_ERROR_FAILEDCOMPONENTLOAD, GetInstance()->ShaderTypeToString(Type));
+								PrintErrorMessage(TSHADERS_ERROR_FAILEDSHADERLOAD, GetInstance()->ShaderTypeToString(Type));
 								printf("%s\n", ErrorLog);
 							}
 
 							else
 							{
 								IsCompiled = GL_TRUE;
-								GetInstance()->ShaderComponents.push_back(this);
-								ID = GetInstance()->ShaderComponents.size() - 1;
+								GetInstance()->Shaders.push_back(this);
+								ID = GetInstance()->Shaders.size() - 1;
 							}	
 						}
 						else
@@ -441,57 +458,82 @@ class ShaderManager
 					}
 				}
 
+				/*
+				* remove the shader from OpenGL
+				*/
 				GLvoid Shutdown()
 				{
 					glDeleteShader(Handle);
 					IsCompiled = GL_FALSE;
 				}
 
-				const GLchar* Name;
-				const GLchar* FilePath;
-				GLuint Handle, Type, ID;
-				GLboolean IsCompiled;
+				const GLchar* Name; /**<the name of the shader component */
+				const GLchar* FilePath; /**<the FilePath of the component*/
+				GLuint Handle; /**<The handle to the shader in OpenGL*/
+				GLuint Type; /**<the type of shader (Vertex, Fragment, etc.)*/
+				GLuint ID; /**<the ID of the shader*/
+				GLboolean IsCompiled; /**<Whether the shader has been compiled*/
 			};
 
-		struct TShader
+		/*
+		* a TShaderProgram is is essentially an OpengL shader program 
+		*/
+		struct TShaderProgram
 			{
-				TShader()
+				/*
+				* basic constructor
+				*/
+				TShaderProgram()
 				{
-					MaxNumComponents = 5;
+					MaxNumShaders = 5;
 					ID = 0;
 				};
-				TShader(const GLchar* ShaderName,
-					std::vector<const GLchar*> ShaderInputs,
-					std::vector<const GLchar*> ShaderOutputs,
-					std::vector<TShaderComponent*> ShaderComponents) :
-					Name(ShaderName), Inputs(ShaderInputs),
-					Outputs(ShaderOutputs), Components(ShaderComponents)
+
+				/*
+				* uses the given values to create an OpenGL shader program
+				*/
+				TShaderProgram(const GLchar* ShaderName,
+					std::vector<const GLchar*> ProgramInputs,
+					std::vector<const GLchar*> ProgramOutputs,
+					std::vector<TShader*> ProgramShaders) :
+					Name(ShaderName), Inputs(ProgramInputs),
+					Outputs(ProgramOutputs), Shaders(ProgramShaders)
 				{
 					Compiled = GL_FALSE;
 					Compile();
 				};
 
-				TShader(const GLchar* ShaderName) : Name(ShaderName)
+				/*
+				* another bare bones constructor
+				*/
+				TShaderProgram(const GLchar* ShaderName) : Name(ShaderName)
 				{
-					MaxNumComponents = 5;
+					MaxNumShaders = 5;
 					Compiled = GL_FALSE;
 				};
 
-				~TShader(){}
+				~TShaderProgram(){}
 
+				/*
+				* shut down the shader program. delete it from OpenGL
+				*/
 				GLvoid Shutdown()
 				{
 					glDeleteProgram(Handle);
 
-					for (GLuint Iterator = 0; Iterator < GetInstance()->ShaderComponents.size(); Iterator++)
+					for (GLuint Iterator = 0; Iterator < GetInstance()->Shaders.size(); Iterator++)
 					{
-						GetInstance()->ShaderComponents[Iterator]->Shutdown();
-						delete GetInstance()->ShaderComponents[Iterator];
+						GetInstance()->Shaders[Iterator]->Shutdown();
+						delete GetInstance()->Shaders[Iterator];
 					}
-					Components.clear();
+					Shaders.clear();
 					Inputs.clear();
 					Outputs.clear();
 				}
+				
+				/*
+				* compile the OpenGL shader program with the given information
+				*/
 				GLboolean Compile()
 				{
 					Handle = glCreateProgram();
@@ -499,11 +541,11 @@ class ShaderManager
 					GLint Successful = GL_FALSE;
 					if (!Compiled)
 					{
-						for (GLuint Iterator = 0; Iterator < Components.size(); Iterator++)
+						for (GLuint Iterator = 0; Iterator < Shaders.size(); Iterator++)
 						{
-							if (Components[Iterator] != nullptr)
+							if (Shaders[Iterator] != nullptr)
 							{
-								glAttachShader(Handle, Components[Iterator]->Handle);
+								glAttachShader(Handle, Shaders[Iterator]->Handle);
 							}
 						}
 
@@ -525,28 +567,48 @@ class ShaderManager
 
 						if (!Successful)
 						{
-							PrintErrorMessage(TSHADERS_ERROR_FAILEDSHADERLINK, Name);
+							PrintErrorMessage(TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK, Name);
 							printf("%s\n", ErrorLog);
 							return GL_FALSE;
 						}
 						//if a shader successfully compiles then it will add itself to storage
 						Compiled = GL_TRUE;
-						GetInstance()->Shaders.push_back(this);
-						ID = GetInstance()->Shaders.size() - 1;
+						GetInstance()->ShaderPrograms.push_back(this);
+						ID = GetInstance()->ShaderPrograms.size() - 1;
 						return GL_TRUE;
 					}
-					PrintErrorMessage(TSHADERS_ERROR_SHADEREXISTS, Name);
+					PrintErrorMessage(TSHADERS_ERROR_SHADERPROGRAMEXISTS, Name);
 					return GL_FALSE;
 				}
 
-				const GLchar* Name;
-				GLuint Handle, ID;
-				GLuint MaxNumComponents;
-				GLboolean Compiled;
-				std::vector<const GLchar*> Inputs, Outputs;
-				std::vector<TShaderComponent*> Components;
+				const GLchar* Name; /**<The name of the shader program*/
+				GLuint Handle; /**<The OpenGL handle to the shader program*/
+				GLuint ID;/**< the ID of the shader program*/
+				static GLuint MaxNumShaders; /**<The Maximum number of components a shader program can have. It's always 5*/
+				GLboolean Compiled; /**<Whether the shader program has been linked successfully*/
+				std::vector<const GLchar*> Inputs; /**<the inputs of the shader program as a vector of strings*/
+				std::vector<const GLchar*> Outputs; /**< the outputs of the shader program as a vector of strings*/
+				std::vector<TShader*> Shaders; /**< the components that the shader program is comprised of as a vector*/
 			};		
 
+		/*
+		* returns a static reference to an instance of TinyShaders
+		*/
+		static TinyShaders* GetInstance()
+		{
+			if (TinyShaders::IsInitialized)
+			{
+				return TinyShaders::Instance;
+			}
+
+			TinyShaders::IsInitialized = GL_TRUE;
+			TinyShaders::Instance = new TinyShaders();
+			return TinyShaders::Instance;
+		}
+
+		/*
+		* print the error message and additional information corresponding to the Error handle
+		*/
 		static GLvoid PrintErrorMessage(GLuint ErrorNumber, const GLchar* String = nullptr)
 		{
 			switch (ErrorNumber)
@@ -563,25 +625,25 @@ class ShaderManager
 				break;
 			}
 
-			case TSHADERS_ERROR_INVALIDSHADERNAME:
+			case TSHADERS_ERROR_INVALIDSHADERPROGRAMNAME:
 			{
 				printf("Error: given shader name is invalid \n");
 				break;
 			}
 
-			case TSHADERS_ERROR_INVALIDSHADERINDEX:
+			case TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX:
 			{
 				printf("Error: given shader index is invalid \n");
 				break;
 			}
 
-			case TSHADERS_ERROR_INVALIDCOMPONENTNAME:
+			case TSHADERS_ERROR_INVALIDSHADERNAME:
 			{
 				printf("Error: given shader component name is invalid \n");
 				break;
 			}
 
-			case TSHADERS_ERROR_INVALIDCOMPONENTINDEX:
+			case TSHADERS_ERROR_INVALIDSHADERINDEX:
 			{
 				printf("Error: given shader component index is invalid \n");
 				break;
@@ -593,13 +655,13 @@ class ShaderManager
 				break;
 			}
 
-			case TSHADERS_ERROR_SHADERNOTFOUND:
+			case TSHADERS_ERROR_SHADERPROGRAMNOTFOUND:
 			{
 				printf("Error: shader with given name %s was not found \n", String);
 				break;
 			}
 
-			case TSHADERS_ERROR_COMPONENTNOTFOUND:
+			case TSHADERS_ERROR_SHADERNOTFOUND:
 			{
 				printf("Error: shader component with given name %s was not found \n", String);
 				break;
@@ -611,53 +673,30 @@ class ShaderManager
 				break;
 			}
 
-			case TSHADERS_ERROR_FAILEDCOMPONENTLOAD:
+			case TSHADERS_ERROR_FAILEDSHADERLOAD:
 			{
 				printf("Error: failed to compile %s shader component \n", String);
 				break;
 			}
 
-			case TSHADERS_ERROR_FAILEDSHADERLINK:
+			case TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK:
 			{
 				if (String != nullptr)
 				{
-<<<<<<< HEAD
 					printf("Error: failed to link program %s \n", String);
-=======
-#if defined(_WIN32)
-					for each(auto Iter in GetInstance()->ShaderComponents)
-#elif defined(__linux__)
-					for (auto Iter : GetInstance()->ShaderComponents)
-#endif
-					{
-						if (!strcmp(ComponentName, Iter->Name))
-						{
-							return Iter;
-						}
-					}
-					return nullptr;
->>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
 				}
-				break;
-			}
-
-			case TSHADERS_ERROR_COMPONENTEXISTS:
-			{
-<<<<<<< HEAD
-				printf("Error: shader component with this name %s already exists \n", String);
 				break;
 			}
 
 			case TSHADERS_ERROR_SHADEREXISTS:
 			{
+				printf("Error: shader component with this name %s already exists \n", String);
+				break;
+			}
+
+			case TSHADERS_ERROR_SHADERPROGRAMEXISTS:
+			{
 				if (String != nullptr)
-=======
-#if defined(_WIN32)
-				for each(auto Iter in GetInstance()->ShaderComponents)
-#elif defined(__linux__)
-				for (auto Iter : GetInstance()->ShaderComponents)
-#endif
->>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
 				{
 					printf("Error: shader with this name %s already exists \n", String);
 					break;
@@ -676,6 +715,9 @@ class ShaderManager
 			}
 		}
 
+		/*
+		* convert the given file to a single dimension c-string buffer
+		*/
 		GLchar* FileToBuffer(const GLchar* Path)
 		{
 			FILE* File = fopen(Path, "rt");
@@ -701,6 +743,9 @@ class ShaderManager
 			return Buffer;
 		}
 
+		/*
+		* convert the given string to a shader type
+		*/
 		GLuint StringToShaderType(const char* TypeString)
 		{
 			if (!strcmp(TypeString, "Vertex"))
@@ -730,6 +775,10 @@ class ShaderManager
 
 			return GL_FALSE;
 		}
+		
+		/*
+		* convert the given shader type to a string
+		*/
 		const GLchar* ShaderTypeToString(GLuint ShaderType)
 		{
 			switch (ShaderType)
@@ -768,13 +817,14 @@ class ShaderManager
 			return nullptr;
 		}
 
-		std::vector<TShader*> Shaders;
-		std::vector<TShaderComponent*> ShaderComponents;	
+		std::vector<TShaderProgram*> ShaderPrograms; /**< all loaded shader programs */
+		std::vector<TShader*> Shaders; /**< all loaded shaders*/
 
-		static GLboolean IsInitialized;
-		static ShaderManager* Instance;
+		static GLboolean IsInitialized; /**<Whether TinyShaders has ban initialized */
+		static TinyShaders* Instance; /**<a static instance of the TinyShaders API*/
 };
 
-GLboolean ShaderManager::IsInitialized = GL_FALSE;
-ShaderManager* ShaderManager::Instance = nullptr;
+GLboolean TinyShaders::IsInitialized = GL_FALSE;
+TinyShaders* TinyShaders::Instance = nullptr;
+GLuint TinyShaders::TShaderProgram::MaxNumShaders = 5;
 #endif
