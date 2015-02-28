@@ -11,6 +11,7 @@ int main()
 
 	//the shader manager doesnt actually need to be initialized
 	TinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt");
+
 	glUseProgram(TinyShaders::GetShaderProgramByIndex(0)->Handle);
 	
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);

@@ -171,7 +171,6 @@ class TinyShaders
 					if (ShaderType <= 5)
 					{
 						TShader* NewShader = new TShader(Name, ShaderType, ShaderFile);
-						delete NewShader;
 					}
 					PrintErrorMessage(TSHADERS_ERROR_INVALIDSHADERTYPE, GetInstance()->ShaderTypeToString(ShaderType));
 				}
@@ -269,15 +268,20 @@ class TinyShaders
 							}
 
 							TShaderProgram* NewShaderProgram = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
-							delete NewShaderProgram;
 						}
 					
 						fclose(pConfigFile);
 					}
 				}
-				PrintErrorMessage(TSHADERS_ERROR_INVALIDFILEPATH);
+				else
+				{
+					PrintErrorMessage(TSHADERS_ERROR_INVALIDFILEPATH);
+				}
 			}
-			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
+			else
+			{
+				PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
+			}
 		}
 
 		static void LoadShadersFromConfigFile(const GLchar* ConfigFile)
