@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-2
+1
 
 TestShader
 2
@@ -7,45 +6,10 @@ Position
 UV
 1
 OutColor
-Vertex
-Fragment
-None
-None
-None
-Shaders/vertex.glsl
-Shaders/pixel.glsl
-None
-None
-None
-
-TestShader
-=======
-1
-
-ShaderTest
->>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
 2
-Position
-UV
-1
-<<<<<<< HEAD
-OutColor
+VertexShader
 Vertex
-Fragment
-=======
-outColour
-VertexTest
-FragmentTest
->>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
-None
-None
-None
 Shaders/vertex.glsl
+FragmentShader
+Fragment
 Shaders/pixel.glsl
-None
-None
-<<<<<<< HEAD
-None
-=======
-None
->>>>>>> 9153425ecab36713dd3b7238276b718f850894d6
