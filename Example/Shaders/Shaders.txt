@@ -9,7 +9,7 @@ OutColor
 2
 VertexShader
 Vertex
-Shaders/vertex.glsl
+./Shaders/vertex.glsl
 FragmentShader
 Fragment
-Shaders/pixel.glsl
+./Shaders/pixel.glsl

@@ -5,8 +5,8 @@
 #include <Windows.h>
 #include <gl/GL.h>
 #define _CRT_SECURE_NO_WARNINGS 1
-//this automatically loads the OpenGL library if you are using Visual studio 
-#pragma comment (lib, "opengl32.lib")
+//someone might already link the library. better to just comment it out and leave it as an option
+//#pragma comment (lib, "opengl32.lib")
 #endif
 
 #if defined(__linux__) 
@@ -268,8 +268,8 @@ class TinyShaders
 							}
 
 							TShaderProgram* NewShaderProgram = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
-						}
-					
+							delete NewShaderProgram;
+						}	
 						fclose(pConfigFile);
 					}
 				}
