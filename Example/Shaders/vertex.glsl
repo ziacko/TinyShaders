@@ -1,11 +1,11 @@
-#version 330
+#version 430 core
 
 /*
  *	very simple vertex shader that just transforms an object-space
  *	position into clip space and passes along a texture coordinate
  */
 
-in vec4 Position;
+layout (location = 0) in vec4 Position;
 in vec2 UV;
 
 out vec4 vPosition;
@@ -17,5 +17,5 @@ void main()
 {
 	vUV = UV;
 	vPosition = Position;
-	gl_Position = vec4(0.0f, 0.0f, 0.5f, 1.0f);
+	gl_Position = vec4(Test.x, Test.y, 0, 1.0f);
 }

@@ -104,7 +104,7 @@ class TinyShaders
 		{
 			if (TinyShaders::IsInitialized)
 			{
-				if (ProgramIndex <= GetInstance()->ShaderPrograms.size() - 1)
+				if (ProgramIndex >= GetInstance()->ShaderPrograms.size() - 1)
 				{
 					return GetInstance()->ShaderPrograms[ProgramIndex];
 				}
@@ -235,7 +235,6 @@ class TinyShaders
 
 							//get number of shaders
 							fscanf(pConfigFile, "%i\n", &NumShaders);
-							printf("%i\n", NumShaders);
 
 							for(GLuint ShaderIter = 0; ShaderIter < NumShaders; ShaderIter++)
 							{
@@ -245,17 +244,14 @@ class TinyShaders
 								
 								//get shader name
 								fscanf(pConfigFile, "%s\n", ShaderName);
-								printf("%s\n", ShaderName);
 
-								//if the shader hanst been loaded already then make a new one
+								//if the shader hasn't been loaded already then make a new one
 								if(!ShaderExists(ShaderName))
 								{
 									//get type
 									fscanf(pConfigFile, "%s\n", ShaderType);
-									printf("%s\n", ShaderType);
 									//get file path
 									fscanf(pConfigFile, "%s\n", ShaderPath);
-									printf("%s\n", ShaderPath);
 
 									Shaders.push_back(new TShader(ShaderName, GetInstance()->StringToShaderType((const char*)ShaderType), ShaderPath));
 								}
@@ -268,7 +264,6 @@ class TinyShaders
 							}
 
 							TShaderProgram* NewShaderProgram = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
-							delete NewShaderProgram;
 						}	
 						fclose(pConfigFile);
 					}
@@ -426,14 +421,17 @@ class TinyShaders
 		*/
 		static GLboolean ShaderExists(const GLchar* ShaderName)
 		{
+			//make sure the name isn't empty
 			if (ShaderName != nullptr)
 			{
+				//make sure the shader manager has shaders stored already
 				if (!GetInstance()->Shaders.empty())
 				{
+					//for each shader in the shader manager
 					for (GLuint Iterator = 0; Iterator < GetInstance()->Shaders.size(); Iterator++)
 					{
-						if (GetInstance()->Shaders[Iterator] != nullptr && 
-							!strcmp(ShaderName, GetInstance()->Shaders[Iterator]->Name))
+						//if a shader of the same name is the same as an existing shader
+						if (!strcmp(ShaderName, GetInstance()->Shaders[Iterator]->Name))
 						{
 							return GL_TRUE;
 						}
@@ -522,8 +520,8 @@ class TinyShaders
 							else
 							{
 								IsCompiled = GL_TRUE;
-								GetInstance()->Shaders.push_back(this);
 								ID = GetInstance()->Shaders.size() - 1;
+								GetInstance()->Shaders.push_back(this);
 							}	
 						}
 						else
@@ -805,7 +803,6 @@ class TinyShaders
 			if (File == nullptr)
 			{
 				PrintErrorMessage(TSHADERS_ERROR_INVALIDFILEPATH, Path);
-				//printf("Error: cannot open file %s for reading \n", Path);
 				return nullptr;
 			}
 

@@ -1,10 +1,8 @@
-#version 420
+#version 430 core
 in vec2 vUV;
 in vec4 vPosition;
 
 out vec4 outColour;
-
-uniform vec4 TestColor;
 
 void main()
 {

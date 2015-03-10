@@ -1,6 +1,6 @@
 1
 
-TestShader
+TestShaderProgram
 2
 Position
 UV
