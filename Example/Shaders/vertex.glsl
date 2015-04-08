@@ -1,21 +1,17 @@
-#version 430 core
+#version 450
 
 /*
  *	very simple vertex shader that just transforms an object-space
  *	position into clip space and passes along a texture coordinate
  */
 
-layout (location = 0) in vec4 Position;
-in vec2 UV;
-
+in vec4 Position;
 out vec4 vPosition;
-out vec2 vUV;
 
-uniform vec2 Test;
+//uniform mat4 Projection;
 
 void main()
 {
-	vUV = UV;
-	vPosition = Position;
-	gl_Position = vec4(Test.x, Test.y, 0, 1.0f);
+	vPosition = vec4(1.0f, 1.0f, 0.1f, 1.0f);// * Projection;
+	gl_Position = vPosition;
 }

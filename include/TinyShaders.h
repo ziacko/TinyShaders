@@ -165,12 +165,14 @@ class TinyShaders
 		static void LoadShader(const GLchar* Name, const GLchar* ShaderFile, GLuint ShaderType)
 		{
 			if (TinyShaders::IsInitialized)
+
 			{
 				if (Name != nullptr)
+
 				{
 					if (ShaderType <= 5)
 					{
-						TShader* NewShader = new TShader(Name, ShaderType, ShaderFile);
+						GetInstance()->Shaders.push_back(new TShader(Name, ShaderType, ShaderFile));
 					}
 					PrintErrorMessage(TSHADERS_ERROR_INVALIDSHADERTYPE, GetInstance()->ShaderTypeToString(ShaderType));
 				}
@@ -185,6 +187,7 @@ class TinyShaders
 		static void LoadShaderProgramsFromConfigFile(const GLchar* ConfigFile)
 		{
 			if (!TinyShaders::IsInitialized)
+
 			{
 				FILE* pConfigFile = fopen(ConfigFile, "r");
 				GLuint NumInputs = 0;
@@ -263,10 +266,13 @@ class TinyShaders
 								}
 							}
 
-							TShaderProgram* NewShaderProgram = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
+							GetInstance()->ShaderPrograms.push_back(new TShaderProgram(ProgramName, Inputs, Outputs, Shaders));
+
 						}	
 						fclose(pConfigFile);
+
 					}
+
 				}
 				else
 				{
@@ -464,7 +470,6 @@ class TinyShaders
 			}
 			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
 		}
-
 	private:
 
 		/*
@@ -521,7 +526,6 @@ class TinyShaders
 							{
 								IsCompiled = GL_TRUE;
 								ID = GetInstance()->Shaders.size() - 1;
-								GetInstance()->Shaders.push_back(this);
 							}	
 						}
 						else
@@ -649,9 +653,8 @@ class TinyShaders
 							printf("%s\n", ErrorLog);
 							return GL_FALSE;
 						}
-						//if a shader successfully compiles then it will add itself to storage
+						//if a shader successfully compiles then it will add itself to storage. dangerous?
 						Compiled = GL_TRUE;
-						GetInstance()->ShaderPrograms.push_back(this);
 						ID = GetInstance()->ShaderPrograms.size() - 1;
 						return GL_TRUE;
 					}
@@ -897,6 +900,28 @@ class TinyShaders
 			}
 
 			return nullptr;
+		}
+
+		GLvoid AddProgram(TShaderProgram* NewProgram)
+		{
+			if(NewProgram != nullptr)
+			{
+				if(NewProgram->Compiled)
+				{
+					GetInstance()->ShaderPrograms.push_back(NewProgram);	
+				}
+			}
+		}
+
+		GLvoid AddShader(TShader* NewShader)
+		{
+			if(NewShader != nullptr)
+			{
+				if(NewShader->IsCompiled)
+				{
+					GetInstance()->Shaders.push_back(NewShader);
+				}
+			}
 		}
 
 		std::vector<TShaderProgram*> ShaderPrograms; /**< all loaded shader programs */
