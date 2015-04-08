@@ -8,10 +8,12 @@
 in vec4 Position;
 out vec4 vPosition;
 
-//uniform mat4 Projection;
+uniform mat4 Projection;
+uniform mat4 View;
+uniform mat4 Model;
 
 void main()
 {
-	vPosition = vec4(1.0f, 1.0f, 0.1f, 1.0f);// * Projection;
+	vPosition = Projection * View * Model * Position;
 	gl_Position = vPosition;
 }
