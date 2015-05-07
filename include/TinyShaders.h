@@ -187,7 +187,6 @@ class TinyShaders
 		static void LoadShaderProgramsFromConfigFile(const GLchar* ConfigFile)
 		{
 			if (!TinyShaders::IsInitialized)
-
 			{
 				FILE* pConfigFile = fopen(ConfigFile, "r");
 				GLuint NumInputs = 0;
@@ -201,11 +200,11 @@ class TinyShaders
 				if (pConfigFile)
 				{
 					//get the total number of shader programs
-					fscanf(pConfigFile, "%i\n\n", &NumPrograms);
+					fscanf(pConfigFile, "%i\n", &NumPrograms);
 
 					for (GLuint ProgramIter = 0;
 						ProgramIter < NumPrograms;
-						ProgramIter++, fscanf(pConfigFile, "\n\n"), Paths.clear(), Inputs.clear(), Outputs.clear(), Names.clear(), Shaders.clear())
+						ProgramIter++, Paths.clear(), Inputs.clear(), Outputs.clear(), Names.clear(), Shaders.clear())
 					{
 						//get the name of the shader program 
 						GLchar* ProgramName = new GLchar[255];
@@ -267,12 +266,9 @@ class TinyShaders
 							}
 
 							GetInstance()->ShaderPrograms.push_back(new TShaderProgram(ProgramName, Inputs, Outputs, Shaders));
-
 						}	
 						fclose(pConfigFile);
-
 					}
-
 				}
 				else
 				{

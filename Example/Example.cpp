@@ -286,7 +286,7 @@ int main()
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glPointSize(20.0f);
 
-	CreatePerspectiveMatrix(90, 1280 / 720, 0.01f, 100.0f);
+	CreatePerspectiveMatrix(45, 1280 / 720, 0.01f, 100.0f);
 	SetModelMatrix();
 	//SetModelMatrix();
 	SetViewMatrix(0, 0, 5, 0, 0, 0, 0, 1, 0);
