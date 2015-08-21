@@ -1,4 +1,4 @@
-#version 330
+#version 420
 
 /*
  *	very simple vertex shader that just transforms an object-space

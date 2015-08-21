@@ -1,4 +1,6 @@
-﻿#ifndef TINYEXTENDER_H_
+﻿//created by Ziyad Barakat 2015
+
+#ifndef TINYEXTENDER_H_
 #define TINYEXTENDER_H_
 
 #define GETFUNCTION(function) function
@@ -18,6 +20,7 @@
 #define GLVERSION4_2 1L << 13
 #define GLVERSION4_3 1L << 14
 #define GLVERSION4_4 1L << 15
+#define GLVERSION4_5 1L << 16
 
 #if defined(_WIN32)
 #include <Windows.h>
@@ -3079,9 +3082,6 @@ public:
 		Version_Major = TinyExtender::GLVersion_Major;
 		Version_Minor = TinyExtender::GLVersion_Minor;
 
-		//this was a bad idea...
-		//(Version_Major >= 1 && Version_Minor >= 2) ? Load1_2Extensions() : TinyExtender::PrintErrorMessage(Version_Major, Version_Minor);
-
 		if (Version_Major > 1 || (Version_Minor >= 2 && Version_Major >= 1))
 		{
 			Load1_2Extensions();
@@ -3233,18 +3233,31 @@ public:
 		else
 		{
 			TinyExtender::PrintErrorMessage(4, 3);
+			return;
 		}
 
 		if (Version_Major > 4 || (Version_Minor >= 4 && Version_Major >= 4))
 		{
 			Load4_4Extensions();
 		}
-
 		else
 		{
 			TinyExtender::PrintErrorMessage(4, 4);
 			return;
 		}
+
+		if (Version_Major > 4 || (Version_Minor >= 5 && Version_Major >= 4))
+		{
+			Load4_5Extensions();
+		}
+
+		else
+		{
+			TinyExtender::PrintErrorMessage(4, 5);
+			return;
+		}
+
+
 	}
 
 	static GLvoid InitializeExtensionsSpecific(GLbitfield OpenGLVersions)
@@ -3401,6 +3414,15 @@ public:
 			}
 
 			TinyExtender::PrintErrorMessage(4, 4);
+		}
+
+		if (OpenGLVersions & GLVERSION4_5)
+		{
+			if (Version_Major > 4 || (Version_Minor >= 4 && Version_Major >= 4))
+			{
+				TinyExtender::Load4_5Extensions();
+			}
+			TinyExtender::PrintErrorMessage(4, 5);
 		}
 	}
 
@@ -4046,6 +4068,11 @@ private:
 		glBindSamplers = (PFNGLBINDSAMPLERSPROC)TinyExtender::GetProcAddress((const GLubyte*)"glBindSamplers");
 		glBindImageTextures = (PFNGLBINDIMAGETEXTURESPROC)TinyExtender::GetProcAddress((const GLubyte*)"glBindImageTextures");
 		glBindVertexBuffers = (PFNGLBINDVERTEXBUFFERSPROC)TinyExtender::GetProcAddress((const GLubyte*)"glBindVertexBuffers");
+	}
+
+	static inline GLvoid Load4_5Extensions()
+	{
+
 	}
 
 	static GLvoid InitializeGLVersion()

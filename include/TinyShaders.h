@@ -1,3 +1,5 @@
+//created my Ziyad Barakat 2015
+
 #ifndef SHADERMANAGER_H_
 #define SHADERMANAGER_H_
 #if defined(_WIN32) || defined(_WIN64)
@@ -6,7 +8,8 @@
 #include <gl/GL.h>
 #define _CRT_SECURE_NO_WARNINGS 1
 //this automatically loads the OpenGL library if you are using Visual studio 
-#pragma comment (lib, "opengl32.lib")
+//comment this out if you have your own method 
+//#pragma comment (lib, "opengl32.lib")
 #endif
 
 #if defined(__linux__) 
@@ -35,6 +38,11 @@
 #define TSHADERS_ERROR_SHADERPROGRAMEXISTS 14
 #define TSHADERS_ERROR_INVALIDSOURCEFILE 15
 
+//we need a callback that can gather all the info about the uniform blocks that 
+//are in a shader program
+//this should include 
+typedef GLvoid(*ParseBlocks)(GLuint ProgramHandle);
+
 class TinyShaders
 {
 	struct TShaderProgram;
@@ -49,7 +57,7 @@ class TinyShaders
 		* shuts down TinyShaders. deletes all OpenGL shaders and shader programs 
 		* as well as calling shutdown on all shader and programs and clears all vectors.
 		*/
-		static void Shutdown()
+		static GLvoid Shutdown()
 		{
 			if (TinyShaders::IsInitialized)
 			{
@@ -75,7 +83,7 @@ class TinyShaders
 		/*
 		* returns a pointer to a TShaderProgram corresponding to the given name. returns nullptr if the TShaderProgram is not found
 		*/
-		static TShaderProgram* GetShaderProgramByName(const char* ProgramName)
+		static TShaderProgram* GetShaderProgramByName(const GLchar* ProgramName)
 		{
 			if (TinyShaders::IsInitialized)
 			{
@@ -170,7 +178,7 @@ class TinyShaders
 				{
 					if (ShaderType <= 5)
 					{
-						TShader* NewShader = new TShader(Name, ShaderType, ShaderFile);
+						auto NewShader = new TShader(Name, ShaderType, ShaderFile);
 					}
 					PrintErrorMessage(TSHADERS_ERROR_INVALIDSHADERTYPE, GetInstance()->ShaderTypeToString(ShaderType));
 				}
@@ -184,7 +192,7 @@ class TinyShaders
 		*/
 		static void LoadShaderProgramsFromConfigFile(const GLchar* ConfigFile)
 		{
-			if (!TinyShaders::IsInitialized)
+			if (GetInstance()->IsInitialized)
 			{
 				FILE* pConfigFile = fopen(ConfigFile, "r");
 				GLuint NumInputs = 0;
@@ -198,15 +206,16 @@ class TinyShaders
 				if (pConfigFile)
 				{
 					//get the total number of shader programs
-					fscanf(pConfigFile, "%i\n\n", &NumPrograms);
+					fscanf(pConfigFile, "%i\n", &NumPrograms);
 
 					for (GLuint ProgramIter = 0;
 						ProgramIter < NumPrograms;
-						ProgramIter++, fscanf(pConfigFile, "\n\n"), Paths.clear(), Inputs.clear(), Outputs.clear(), Names.clear(), Shaders.clear())
+						ProgramIter++, Paths.clear(), Inputs.clear(), Outputs.clear(), Names.clear(), Shaders.clear())
 					{
 						//get the name of the shader program 
 						GLchar* ProgramName = new GLchar[255];
 						fscanf(pConfigFile, "%s\n", ProgramName);
+						printf("%s\n", ProgramName);
 
 						//this is an anti-trolling measure. If a shader with the same name already exists the don't bother making a new one.
 						if (!GetInstance()->ShaderProgramExists(ProgramName))
@@ -247,7 +256,7 @@ class TinyShaders
 								fscanf(pConfigFile, "%s\n", ShaderName);
 								printf("%s\n", ShaderName);
 
-								//if the shader hanst been loaded already then make a new one
+								//if the shader hasn't been loaded already then make a new one
 								if(!ShaderExists(ShaderName))
 								{
 									//get type
@@ -262,16 +271,18 @@ class TinyShaders
 
 								else
 								{
+									//tell scanf to skip a couple lines
+									fscanf(pConfigFile, "%*[^\n]\n %*[^\n]\n", NULL);
 									//if shader already exists then add an existing one from storage, it should already be compiled
 									Shaders.push_back(GetShaderByName(ShaderName));
 								}
 							}
 
-							TShaderProgram* NewShaderProgram = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
+							auto NewShaderProgram = new TShaderProgram(ProgramName, Inputs, Outputs, Shaders);
+							//get shader block names
 						}
-					
-						fclose(pConfigFile);
 					}
+					fclose(pConfigFile);
 				}
 				else
 				{
@@ -294,7 +305,7 @@ class TinyShaders
 				if(pConfigFile)
 				{
 					//get the number of shaders to load
-					fscanf(pConfigFile, "%i\n\n", &NumShaders);
+					fscanf(pConfigFile, "%i\n", &NumShaders);
 				    GLchar* ShaderName;
 					GLchar*	ShaderType;
 				   	GLchar*	ShaderPath;
@@ -467,6 +478,16 @@ class TinyShaders
 			PrintErrorMessage(TSHADERS_ERROR_NOTINITIALIZED);
 		}
 
+		static GLboolean SetShaderBlockParseEvent(ParseBlocks ShaderBlockParse)
+		{
+			if (GetInstance()->IsInitialized)
+			{
+				GetInstance()->ShaderBlocksEvent = ShaderBlockParse;
+				return GL_TRUE;
+			}
+			return GL_FALSE;
+		}
+
 	private:
 
 		/*
@@ -581,6 +602,11 @@ class TinyShaders
 				{
 					Compiled = GL_FALSE;
 					Compile();
+					//get number of uniform blocks
+					if (GetInstance()->ShaderBlocksEvent != nullptr)
+					{
+						GetInstance()->ShaderBlocksEvent(Handle);
+					}
 				};
 
 				/*
@@ -604,7 +630,11 @@ class TinyShaders
 					for (GLuint Iterator = 0; Iterator < GetInstance()->Shaders.size(); Iterator++)
 					{
 						GetInstance()->Shaders[Iterator]->Shutdown();
-						delete GetInstance()->Shaders[Iterator];
+						/*if (GetInstance()->Shaders[Iterator] != nullptr)
+						{
+							delete GetInstance()->Shaders[Iterator];
+						}*/
+						
 					}
 					Shaders.clear();
 					Inputs.clear();
@@ -669,7 +699,7 @@ class TinyShaders
 				std::vector<const GLchar*> Inputs; /**<the inputs of the shader program as a vector of strings*/
 				std::vector<const GLchar*> Outputs; /**< the outputs of the shader program as a vector of strings*/
 				std::vector<TShader*> Shaders; /**< the components that the shader program is comprised of as a vector*/
-			};		
+			};
 
 		/*
 		* returns a static reference to an instance of TinyShaders
@@ -815,9 +845,9 @@ class TinyShaders
 			fseek(File, 0, SEEK_SET);
 
 			//allocate a file buffer and read the contents of the file
-			char* Buffer = new char[FileLength + 1];
+			GLchar* Buffer = new GLchar[FileLength + 1];
 			memset(Buffer, 0, FileLength + 1);
-			fread(Buffer, sizeof(char), FileLength, File);
+			fread(Buffer, sizeof(GLchar), FileLength, File);
 
 			fclose(File);
 			return Buffer;
@@ -826,7 +856,7 @@ class TinyShaders
 		/*
 		* convert the given string to a shader type
 		*/
-		GLuint StringToShaderType(const char* TypeString)
+		GLuint StringToShaderType(const GLchar* TypeString)
 		{
 			if(TypeString != nullptr)
 			{
@@ -905,11 +935,13 @@ class TinyShaders
 		std::vector<TShaderProgram*> ShaderPrograms; /**< all loaded shader programs */
 		std::vector<TShader*> Shaders; /**< all loaded shaders*/
 
-		static GLboolean IsInitialized; /**<Whether TinyShaders has ban initialized */
+		static GLboolean IsInitialized; /**< Whether TinyShaders  has ban initialized */
 		static TinyShaders* Instance; /**<a static instance of the TinyShaders API*/
+		static ParseBlocks ShaderBlocksEvent;
 };
 
 GLboolean TinyShaders::IsInitialized = GL_FALSE;
 TinyShaders* TinyShaders::Instance = nullptr;
 GLuint TinyShaders::TShaderProgram::MaxNumShaders = 5;
+ParseBlocks TinyShaders::ShaderBlocksEvent = nullptr;
 #endif
