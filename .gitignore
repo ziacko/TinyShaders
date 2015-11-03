@@ -1,0 +1,10 @@
+*.tlog
+*.lastcodeanalysissucceeded
+*.lastbuildstate
+*.xml
+*.idb
+*.sdf
+*.opensdf
+*.sln
+*.vcxproj
+*.filters

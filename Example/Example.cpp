@@ -1,30 +1,30 @@
 #include <TinyExtender.h>
-#include <TinyShaders.h>
+#include "TinyShaders.h"
 #include <TinyWindow.h>
 
 int main()
 {
-	WindowManager::Initialize();
+	windowManager::Initialize();
 	
-	WindowManager::AddWindow("Example");
+	windowManager::AddWindow("Example");
 	TinyExtender::InitializeExtensions();
 
 	//the shader manager doesn't actually need to be initialized
-	TinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt");
+	tinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt");
 
-	glUseProgram(TinyShaders::GetShaderProgramByIndex(0)->Handle);
+	glUseProgram(tinyShaders::GetShaderProgramByIndex(0)->handle);
 	
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glPointSize(20.0f);
-	while (!WindowManager::GetWindowShouldClose("Example"))
+	while (!windowManager::GetWindowShouldCloseByName("Example"))
 	{
-		WindowManager::PollForEvents();
+		windowManager::PollForEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_POINTS, 0, 1);
-		WindowManager::WindowSwapBuffers("Example");
+		windowManager::WindowSwapBuffersByName("Example");
 	}
-	TinyShaders::Shutdown();
-	WindowManager::ShutDown();
+	tinyShaders::Shutdown();
+	windowManager::ShutDown();
 	
 	return 0;
 }
