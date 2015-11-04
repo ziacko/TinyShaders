@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<add>
+  <doc>
+    <field name="type">file</field>
+    <field name="name">TinyShaders.h</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html</field>
+    <field name="keywords">TinyShaders.h</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_NOTINITIALIZED</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a493cbfd2a6726fef42c884c479fa249b</field>
+    <field name="keywords">TSHADERS_ERROR_NOTINITIALIZED</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSTRING</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#aea22d76e5643eb8045e9e3bc2433dd08</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSTRING</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSHADERPROGRAMNAME</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#ab197622f323eb84a913f1ad48c6cd7ff</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSHADERPROGRAMNAME</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#aeca31dd853c896b222a301da14c5340b</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSHADERNAME</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a28db0b576ce2174ef8bb827fb82f793c</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSHADERNAME</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSHADERINDEX</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a20ee82bd566a9fd933c2ca8dfd128bc0</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSHADERINDEX</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDFILEPATH</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a1f353ebca6daf67a96224320a35092b1</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDFILEPATH</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_SHADERPROGRAMNOTFOUND</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a6b6444926df599903948ee8e1a7fe187</field>
+    <field name="keywords">TSHADERS_ERROR_SHADERPROGRAMNOTFOUND</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_SHADERNOTFOUND</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a09c2ea68f256f26f69953790d8e5e054</field>
+    <field name="keywords">TSHADERS_ERROR_SHADERNOTFOUND</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSHADERTYPE</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a68f7e4fa73c376558617d8c828bc4889</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSHADERTYPE</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_FAILEDSHADERLOAD</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a05702262eeee03e471fe0430c41721bb</field>
+    <field name="keywords">TSHADERS_ERROR_FAILEDSHADERLOAD</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a925d29378860a75021a9a59036418518</field>
+    <field name="keywords">TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_SHADEREXISTS</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#af441e592d66ebe143180faf59a41b6b2</field>
+    <field name="keywords">TSHADERS_ERROR_SHADEREXISTS</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_SHADERPROGRAMEXISTS</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#ac056d04ffbd9540c405e5a086b797186</field>
+    <field name="keywords">TSHADERS_ERROR_SHADERPROGRAMEXISTS</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">define</field>
+    <field name="name">TSHADERS_ERROR_INVALIDSOURCEFILE</field>
+    <field name="url">d2/dcf/TinyShaders_8h.html#a60850fdd8d5481d6f3eaadabc909aebe</field>
+    <field name="keywords">TSHADERS_ERROR_INVALIDSOURCEFILE</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">class</field>
+    <field name="name">TinyShaders</field>
+    <field name="url">d4/d2a/classTinyShaders.html</field>
+    <field name="keywords">TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TinyShaders</field>
+    <field name="args">()</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a3646cdcf5228165767115bb4e0e04582</field>
+    <field name="keywords">TinyShaders TinyShaders::TinyShaders TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::~TinyShaders</field>
+    <field name="args">()</field>
+    <field name="url">d4/d2a/classTinyShaders.html#af88260b2f3f51247098da1881ed3c9ce</field>
+    <field name="keywords">TinyShaders::~TinyShaders TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::Shutdown</field>
+    <field name="args">()</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a9efb6463e491d35f8c9c19b86bc56809</field>
+    <field name="keywords">Shutdown TinyShaders::Shutdown TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::GetShaderProgramByName</field>
+    <field name="args">(const char *ProgramName)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a1f8d3dbef3b5918f4ba7aa7b5b7eb893</field>
+    <field name="keywords">GetShaderProgramByName TinyShaders::GetShaderProgramByName TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::GetShaderProgramByIndex</field>
+    <field name="args">(GLuint ProgramIndex)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a3ba5411675dafac230d3b25bad9eac2d</field>
+    <field name="keywords">GetShaderProgramByIndex TinyShaders::GetShaderProgramByIndex TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::GetShaderByName</field>
+    <field name="args">(const GLchar *ShaderName)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a95c4e7a374b8c689197bac427b33255d</field>
+    <field name="keywords">GetShaderByName TinyShaders::GetShaderByName TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::GetShaderByIndex</field>
+    <field name="args">(GLuint ShaderIndex)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#ad8591b10ee3cf7f5c6b029892831ea0b</field>
+    <field name="keywords">GetShaderByIndex TinyShaders::GetShaderByIndex TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::LoadShader</field>
+    <field name="args">(const GLchar *Name, const GLchar *ShaderFile, GLuint ShaderType)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#afb63d6ef354956f411b588ad1c9c5577</field>
+    <field name="keywords">LoadShader TinyShaders::LoadShader TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::LoadShaderProgramsFromConfigFile</field>
+    <field name="args">(const GLchar *ConfigFile)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#ad5be11026344b938740c844d860c8c6d</field>
+    <field name="keywords">LoadShaderProgramsFromConfigFile TinyShaders::LoadShaderProgramsFromConfigFile TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::LoadShadersFromConfigFile</field>
+    <field name="args">(const GLchar *ConfigFile)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a479edd7d17ca708820f2d7f824859e83</field>
+    <field name="keywords">LoadShadersFromConfigFile TinyShaders::LoadShadersFromConfigFile TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::SaveShaderProgramsToConfigFile</field>
+    <field name="args">(const GLchar *FileName)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a1d192853d3e8c43866ef84adcfcc9e45</field>
+    <field name="keywords">SaveShaderProgramsToConfigFile TinyShaders::SaveShaderProgramsToConfigFile TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::BuildProgramFromShaders</field>
+    <field name="args">(const GLchar *ShaderName, std::vector&lt; const GLchar * &gt; Inputs, std::vector&lt; const GLchar * &gt; Outputs, const GLchar *VertexShaderName, const GLchar *FragmentShaderName, const GLchar *GeometryShaderName, const GLchar *TessContShaderName, const GLchar *TessEvalShaderName)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#abf1824124cffe67bbce8660a1a65e07f</field>
+    <field name="keywords">BuildProgramFromShaders TinyShaders::BuildProgramFromShaders TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::ShaderProgramExists</field>
+    <field name="args">(const GLchar *ShaderName)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a91220c81a3db7ce3f8d0c09db90bec21</field>
+    <field name="keywords">ShaderProgramExists TinyShaders::ShaderProgramExists TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::ShaderExists</field>
+    <field name="args">(const GLchar *ShaderName)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a3dad1222764e8630870dcfaec0f2b832</field>
+    <field name="keywords">ShaderExists TinyShaders::ShaderExists TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::LoadShaderFromBuffer</field>
+    <field name="args">(const char *Name, const GLchar *Buffer, GLuint ShaderType)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a147f34890526190c5df385fdd16d675d</field>
+    <field name="keywords">LoadShaderFromBuffer TinyShaders::LoadShaderFromBuffer TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::FileToBuffer</field>
+    <field name="args">(const GLchar *Path)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a1b2162d578241a19142752523cd325aa</field>
+    <field name="keywords">FileToBuffer TinyShaders::FileToBuffer TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::StringToShaderType</field>
+    <field name="args">(const char *TypeString)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a316a1dc1cb24885f6fbea03ca33fdec5</field>
+    <field name="keywords">StringToShaderType TinyShaders::StringToShaderType TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::ShaderTypeToString</field>
+    <field name="args">(GLuint ShaderType)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a07e682d955df4d02b694584935d3d4e7</field>
+    <field name="keywords">ShaderTypeToString TinyShaders::ShaderTypeToString TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::AddProgram</field>
+    <field name="args">(TShaderProgram *NewProgram)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a098db2ae297ce317d4b39fd7879388f1</field>
+    <field name="keywords">AddProgram TinyShaders::AddProgram TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::AddShader</field>
+    <field name="args">(TShader *NewShader)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a4f0a2403ce4926974c4eb0d1c61a2434</field>
+    <field name="keywords">AddShader TinyShaders::AddShader TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::GetInstance</field>
+    <field name="args">()</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a4a615014cb9183fd4f13cf7dd8eab2c3</field>
+    <field name="keywords">GetInstance TinyShaders::GetInstance TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::PrintErrorMessage</field>
+    <field name="args">(GLuint ErrorNumber, const GLchar *String=nullptr)</field>
+    <field name="url">d4/d2a/classTinyShaders.html#ac12b3dcfa7e1b7aec35a4cfa38a87273</field>
+    <field name="keywords">PrintErrorMessage TinyShaders::PrintErrorMessage TinyShaders</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::ShaderPrograms</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a381f745511c6fc78dc8078a553b472eb</field>
+    <field name="keywords">ShaderPrograms TinyShaders::ShaderPrograms TinyShaders</field>
+    <field name="text">all loaded shader programs</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::Shaders</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a8764786ada21ffa4dcff6906a0d324a5</field>
+    <field name="keywords">Shaders TinyShaders::Shaders TinyShaders</field>
+    <field name="text">all loaded shaders</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::IsInitialized</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a0046a0998db9f8a3e8f367f71a6b4cad</field>
+    <field name="keywords">IsInitialized TinyShaders::IsInitialized TinyShaders</field>
+    <field name="text">Whether TinyShaders has ban initialized</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::Instance</field>
+    <field name="url">d4/d2a/classTinyShaders.html#a0ab97a5bcab1971c95556f720ccdeda3</field>
+    <field name="keywords">Instance TinyShaders::Instance TinyShaders</field>
+    <field name="text">a static instance of the TinyShaders API</field>
+  </doc>
+  <doc>
+    <field name="type">source</field>
+    <field name="name">TinyShaders.h</field>
+    <field name="url">.html#l00001</field>
+    <field name="keywords"></field>
+    <field name="text">NewProgram NewProgram Compiled GetInstance ShaderPrograms push_back NewProgram NewShader NewShader IsCompiled GetInstance Shaders push_back NewShader TinyShaders::IsInitialized std::vector&lt;TShader*&gt; Shaders Shaders push_back GetShaderByName VertexShaderName Shaders push_back GetShaderByName FragmentShaderName Shaders push_back GetShaderByName GeometryShaderName Shaders push_back GetShaderByName TessContShaderName Shaders push_back GetShaderByName TessEvalShaderName TShaderProgram NewShaderProgram TShaderProgram ShaderName Inputs Outputs Shaders NewShaderProgram PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED FILE File fopen Path File PrintErrorMessage TSHADERS_ERROR_INVALIDFILEPATH Path fseek File SEEK_END GLuint FileLength ftell File fseek File SEEK_SET Buffer FileLength memset Buffer FileLength fread Buffer FileLength File fclose File Buffer TinyShaders::IsInitialized TinyShaders::Instance TinyShaders::IsInitialized GL_TRUE TinyShaders::Instance TinyShaders TinyShaders::Instance TinyShaders::IsInitialized ShaderIndex GetInstance Shaders size GetInstance Shaders ShaderIndex PrintErrorMessage TSHADERS_ERROR_INVALIDSHADERINDEX PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized ShaderName GLuint Iterator Iterator GetInstance Shaders size Iterator strcmp GetInstance Shaders Iterator Name ShaderName GetInstance Shaders Iterator PrintErrorMessage TSHADERS_ERROR_SHADERNOTFOUND PrintErrorMessage TSHADERS_ERROR_INVALIDSHADERNAME PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized ProgramIndex GetInstance ShaderPrograms size GetInstance ShaderPrograms ProgramIndex PrintErrorMessage TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized ProgramName GLuint Iterator Iterator GetInstance ShaderPrograms size Iterator strcmp GetInstance ShaderPrograms Iterator Name ProgramName GetInstance ShaderPrograms Iterator PrintErrorMessage TSHADERS_ERROR_SHADERPROGRAMNOTFOUND PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized Name ShaderType GetInstance Shaders push_back TShader Name ShaderType ShaderFile PrintErrorMessage TSHADERS_ERROR_INVALIDSHADERTYPE GetInstance ShaderTypeToString ShaderType PrintErrorMessage TSHADERS_ERROR_INVALIDSTRING PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized Buffer Name ShaderExists Name TShader NewShader TShader Name Buffer ShaderType NewShader PrintErrorMessage TSHADERS_ERROR_SHADERNOTFOUND PrintErrorMessage TSHADERS_ERROR_INVALIDSHADERNAME PrintErrorMessage TSHADERS_ERROR_INVALIDSTRING PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized FILE pConfigFile fopen ConfigFile GLuint NumInputs GLuint NumOutputs GLuint NumPrograms GLuint NumShaders GLuint Iterator std::vector&lt;const GLchar*&gt; Inputs Outputs Paths Names std::vector&lt;TShader*&gt; Shaders pConfigFile fscanf pConfigFile NumPrograms GLuint ProgramIter ProgramIter NumPrograms ProgramIter Paths clear Inputs clear Outputs clear Names clear Shaders clear GLchar ProgramName GLchar fscanf pConfigFile ProgramName GetInstance ShaderProgramExists ProgramName fscanf pConfigFile NumInputs Iterator Iterator NumInputs Iterator GLchar Input GLchar fscanf pConfigFile Input Inputs push_back Input fscanf pConfigFile NumOutputs Iterator Iterator NumOutputs Iterator GLchar Output GLchar fscanf pConfigFile Output Outputs push_back Output fscanf pConfigFile NumShaders GLuint ShaderIter ShaderIter NumShaders ShaderIter GLchar ShaderName GLchar GLchar ShaderPath GLchar GLchar ShaderType GLchar fscanf pConfigFile ShaderName ShaderExists ShaderName fscanf pConfigFile ShaderType fscanf pConfigFile ShaderPath Shaders push_back TShader ShaderName GetInstance StringToShaderType ShaderType ShaderPath Shaders push_back GetShaderByName ShaderName GetInstance ShaderPrograms push_back TShaderProgram ProgramName Inputs Outputs Shaders fclose pConfigFile PrintErrorMessage TSHADERS_ERROR_INVALIDFILEPATH PrintErrorMessage TSHADERS_ERROR_NOTINITIALIZED TinyShaders::IsInitialized FILE pConfigFile fopen ConfigFile GLuint NumShaders pConfigFile fscanf pConfigFile NumShaders GLchar ShaderName GLchar ShaderType GLchar ShaderPath GLchar empty GLuint ShaderIter ShaderIter NumShaders ShaderIter fscanf pConfigFile ShaderName empty fscanf pConfigFile ShaderName GetInstance ShaderExists ShaderName ShaderType empty fscanf pConfigFile ShaderType ShaderPath empty fscanf pConfigFile ShaderPath TShader NewShader TShader ShaderName GetInstance StringToShaderType ShaderType ShaderPath NewShader ErrorNumber TSHADERS_ERROR_NOTINITIALIZED printf TSHADERS_ERROR_INVALIDSTRING printf TSHADERS_ERROR_INVALIDSHADERPROGRAMNAME printf TSHADERS_ERROR_INVALIDSHADERPROGRAMINDEX printf TSHADERS_ERROR_INVALIDSHADERNAME printf TSHADERS_ERROR_INVALIDSHADERINDEX printf TSHADERS_ERROR_INVALIDFILEPATH printf String TSHADERS_ERROR_SHADERPROGRAMNOTFOUND printf String TSHADERS_ERROR_SHADERNOTFOUND printf String TSHADERS_ERROR_INVALIDSHADERTYPE printf TSHADERS_ERROR_FAILEDSHADERLOAD printf String TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK String printf String TSHADERS_ERROR_SHADEREXISTS printf String TSHADERS_ERROR_SHADERPROGRAMEXISTS String printf String TSHADERS_ERROR_INVALIDSOURCEFILE printf FILE pConfigFile fopen FileName fprintf pConfigFile GLint GetInstance ShaderPrograms size GLuint ProgramIter ProgramIter GetInstance ShaderPrograms size ProgramIter fprintf pConfigFile GetInstance ShaderPrograms ProgramIter Name fprintf pConfigFile GLint GetInstance ShaderPrograms ProgramIter Inputs size GLuint InputIter InputIter GetInstance ShaderPrograms ProgramIter Inputs size InputIter fprintf pConfigFile GetInstance ShaderPrograms ProgramIter Inputs InputIter fprintf pConfigFile GLint GetInstance ShaderPrograms ProgramIter Outputs size GLuint OutputIter OutputIter GetInstance ShaderPrograms ProgramIter Outputs size OutputIter fprintf pConfigFile GetInstance ShaderPrograms ProgramIter Outputs OutputIter fprintf pConfigFile GLint GetInstance ShaderPrograms ProgramIter Shaders size GLuint ShaderIter ShaderIter GetInstance ShaderPrograms ProgramIter Shaders size ShaderIter fprintf pConfigFile GetInstance ShaderPrograms ProgramIter Shaders ShaderIter Name fprintf pConfigFile GetInstance ShaderTypeToString GetInstance ShaderPrograms ProgramIter Shaders ShaderIter Type fprintf pConfigFile GetInstance ShaderPrograms ProgramIter Shaders ShaderIter FilePath fclose pConfigFile ShaderName GetInstance Shaders empty GLuint Iterator Iterator GetInstance Shaders size Iterator strcmp ShaderName GetInstance Shaders Iterator Name GL_TRUE GL_FALSE GL_FALSE GL_FALSE ShaderName GetInstance ShaderPrograms empty GLuint Iterator Iterator GetInstance ShaderPrograms size Iterator GetInstance ShaderPrograms Iterator strcmp ShaderName GetInstance ShaderPrograms Iterator Name GL_TRUE GL_FALSE GL_FALSE GL_FALSE ShaderType GL_VERTEX_SHADER GL_FRAGMENT_SHADER GL_GEOMETRY_SHADER GL_TESS_CONTROL_SHADER GL_TESS_EVALUATION_SHADER NULL TinyShaders::IsInitialized GLuint Iterator Iterator GetInstance Shaders size Iterator GetInstance Shaders Iterator Shutdown GetInstance Shaders Iterator GLuint Iterator Iterator GetInstance ShaderPrograms size Iterator GetInstance ShaderPrograms Iterator Shutdown GetInstance ShaderPrograms Iterator GetInstance ShaderPrograms clear GetInstance Shaders clear Instance TypeString strcmp TypeString GL_VERTEX_SHADER strcmp TypeString GL_FRAGMENT_SHADER strcmp TypeString GL_GEOMETRY_SHADER strcmp TypeString GL_TESS_CONTROL_SHADER strcmp TypeString GL_TESS_EVALUATION_SHADER GL_FALSE PrintErrorMessage TSHADERS_ERROR_INVALIDSTRING GL_FALSE Name ShaderName Type ShaderType IsCompiled GL_FALSE FilePath ShaderFilePath Compile GetInstance FileToBuffer ShaderFilePath Name ShaderName Type ShaderType Type ShaderType IsCompiled GL_FALSE Compile Buffer IsCompiled GLchar ErrorLog GLint Successful Source Handle glCreateShader Type glShaderSource Handle GLchar Source glCompileShader Handle glGetShaderiv Handle GL_COMPILE_STATUS Successful glGetShaderInfoLog Handle ErrorLog ErrorLog Successful GL_TRUE PrintErrorMessage TSHADERS_ERROR_FAILEDSHADERLOAD GetInstance ShaderTypeToString Type printf ErrorLog IsCompiled GL_TRUE ID GetInstance Shaders size PrintErrorMessage TSHADERS_ERROR_INVALIDSOURCEFILE PrintErrorMessage TSHADERS_ERROR_INVALIDFILEPATH FilePath glDeleteShader Handle IsCompiled GL_FALSE MaxNumShaders ID Name ShaderName Inputs ProgramInputs Outputs ProgramOutputs Shaders ProgramShaders Compiled GL_FALSE Compile Name ShaderName MaxNumShaders Compiled GL_FALSE Handle glCreateProgram GLchar ErrorLog GLint Successful GL_FALSE Compiled GLuint Iterator Iterator Shaders size Iterator Shaders Iterator glAttachShader Handle Shaders Iterator Handle GLuint i i Inputs size i glBindAttribLocation Handle i Inputs i GLuint i i Outputs size i glBindFragDataLocation Handle i Outputs i glLinkProgram Handle glGetProgramiv Handle GL_LINK_STATUS Successful glGetProgramInfoLog Handle ErrorLog ErrorLog Successful PrintErrorMessage TSHADERS_ERROR_FAILEDSHADERPROGRAMLINK Name printf ErrorLog GL_FALSE Compiled GL_TRUE ID GetInstance ShaderPrograms size GL_TRUE PrintErrorMessage TSHADERS_ERROR_SHADERPROGRAMEXISTS Name GL_FALSE glDeleteProgram Handle GLuint Iterator Iterator GetInstance Shaders size Iterator GetInstance Shaders Iterator Shutdown GetInstance Shaders Iterator Shaders clear Inputs clear Outputs clear</field>
+  </doc>
+  <doc>
+    <field name="type">struct</field>
+    <field name="name">TinyShaders::TShader</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html</field>
+    <field name="keywords">TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShader::TShader</field>
+    <field name="args">(const GLchar *ShaderName, GLuint ShaderType, const GLchar *ShaderFilePath)</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#af4b2b36bc5ba54781a6cc32795e4f32b</field>
+    <field name="keywords">TShader TinyShaders::TShader::TShader TinyShaders::TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShader::TShader</field>
+    <field name="args">(const GLchar *ShaderName, const GLchar *Buffer, GLuint ShaderType)</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a763df43ebe26f91aa86737eef7607b6c</field>
+    <field name="keywords">TShader TinyShaders::TShader::TShader TinyShaders::TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShader::TShader</field>
+    <field name="args">()</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a24ed6168a1841aa120fcbaa2f901f431</field>
+    <field name="keywords">TShader TinyShaders::TShader::TShader TinyShaders::TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShader::~TShader</field>
+    <field name="args">()</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#af2ca309db4599d2594721b24be040211</field>
+    <field name="keywords">TinyShaders::TShader::~TShader TinyShaders::TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShader::Compile</field>
+    <field name="args">(const GLchar *Source)</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a823de066a1a00f6d2ae8f849b6030549</field>
+    <field name="keywords">Compile TinyShaders::TShader::Compile TinyShaders::TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShader::Shutdown</field>
+    <field name="args">()</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a7769239837b5886dad38ac2144519b41</field>
+    <field name="keywords">Shutdown TinyShaders::TShader::Shutdown TinyShaders::TShader</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShader::Name</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a175ffe1045290dce410da5b58d90bd61</field>
+    <field name="keywords">Name TinyShaders::TShader::Name TinyShaders::TShader</field>
+    <field name="text">the name of the shader component</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShader::FilePath</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a5d372c0ee046214b4751ac6baffddcbe</field>
+    <field name="keywords">FilePath TinyShaders::TShader::FilePath TinyShaders::TShader</field>
+    <field name="text">the FilePath of the component</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShader::Handle</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#aaeba5bb3c076ce2a8743d3a4984c3710</field>
+    <field name="keywords">Handle TinyShaders::TShader::Handle TinyShaders::TShader</field>
+    <field name="text">The handle to the shader in OpenGL</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShader::Type</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#acbbf67dcc249c375d2a43b378bebc0ee</field>
+    <field name="keywords">Type TinyShaders::TShader::Type TinyShaders::TShader</field>
+    <field name="text">the type of shader Vertex Fragment etc</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShader::ID</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#ac6bf4155d8d0c8b83d69acb311331c99</field>
+    <field name="keywords">ID TinyShaders::TShader::ID TinyShaders::TShader</field>
+    <field name="text">the ID of the shader</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShader::IsCompiled</field>
+    <field name="url">dc/d9f/structTinyShaders_1_1TShader.html#a693a21cabba322fcdde7c8fc850b535a</field>
+    <field name="keywords">IsCompiled TinyShaders::TShader::IsCompiled TinyShaders::TShader</field>
+    <field name="text">Whether the shader has been compiled</field>
+  </doc>
+  <doc>
+    <field name="type">struct</field>
+    <field name="name">TinyShaders::TShaderProgram</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html</field>
+    <field name="keywords">TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShaderProgram::TShaderProgram</field>
+    <field name="args">()</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a57984434ec815eba462104de7e04d14b</field>
+    <field name="keywords">TShaderProgram TinyShaders::TShaderProgram::TShaderProgram TinyShaders::TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShaderProgram::TShaderProgram</field>
+    <field name="args">(const GLchar *ShaderName, std::vector&lt; const GLchar * &gt; ProgramInputs, std::vector&lt; const GLchar * &gt; ProgramOutputs, std::vector&lt; TShader * &gt; ProgramShaders)</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#af28f145805a36f2a4eb05978024e571f</field>
+    <field name="keywords">TShaderProgram TinyShaders::TShaderProgram::TShaderProgram TinyShaders::TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShaderProgram::TShaderProgram</field>
+    <field name="args">(const GLchar *ShaderName)</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a9362caa8e48551657f1201a800baffdf</field>
+    <field name="keywords">TShaderProgram TinyShaders::TShaderProgram::TShaderProgram TinyShaders::TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShaderProgram::~TShaderProgram</field>
+    <field name="args">()</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a4c3c6a7b726dd74f419ff37e8d788576</field>
+    <field name="keywords">TinyShaders::TShaderProgram::~TShaderProgram TinyShaders::TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShaderProgram::Shutdown</field>
+    <field name="args">()</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a41c2a610446ea58dc9318e7ede7f8e13</field>
+    <field name="keywords">Shutdown TinyShaders::TShaderProgram::Shutdown TinyShaders::TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">function</field>
+    <field name="name">TinyShaders::TShaderProgram::Compile</field>
+    <field name="args">()</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a7bcccd9f6b0975cee379594be3453230</field>
+    <field name="keywords">Compile TinyShaders::TShaderProgram::Compile TinyShaders::TShaderProgram</field>
+    <field name="text"></field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::Name</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a4da9d4e9fca4fa079b06a3e16180df07</field>
+    <field name="keywords">Name TinyShaders::TShaderProgram::Name TinyShaders::TShaderProgram</field>
+    <field name="text">The name of the shader program</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::Handle</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#aa22d5e671a00bb4331bc155eee6d4410</field>
+    <field name="keywords">Handle TinyShaders::TShaderProgram::Handle TinyShaders::TShaderProgram</field>
+    <field name="text">The OpenGL handle to the shader program</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::ID</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a7183bd223fd4391355056c55acd087b7</field>
+    <field name="keywords">ID TinyShaders::TShaderProgram::ID TinyShaders::TShaderProgram</field>
+    <field name="text">the ID of the shader program</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::Compiled</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a06bed4d30a15df4dd208bd0d42b883e2</field>
+    <field name="keywords">Compiled TinyShaders::TShaderProgram::Compiled TinyShaders::TShaderProgram</field>
+    <field name="text">Whether the shader program has been linked successfully</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::Inputs</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a93cf030bbcd1aa490d4bb610986bc2ca</field>
+    <field name="keywords">Inputs TinyShaders::TShaderProgram::Inputs TinyShaders::TShaderProgram</field>
+    <field name="text">the inputs of the shader program as a vector of strings</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::Outputs</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a5cd1e18bd612132c1dc2bf5f73860c2e</field>
+    <field name="keywords">Outputs TinyShaders::TShaderProgram::Outputs TinyShaders::TShaderProgram</field>
+    <field name="text">the outputs of the shader program as a vector of strings</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::Shaders</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#a961a00add7bf360b4e9c482784810e2a</field>
+    <field name="keywords">Shaders TinyShaders::TShaderProgram::Shaders TinyShaders::TShaderProgram</field>
+    <field name="text">the components that the shader program is comprised of as a vector</field>
+  </doc>
+  <doc>
+    <field name="type">variable</field>
+    <field name="name">TinyShaders::TShaderProgram::MaxNumShaders</field>
+    <field name="url">db/db5/structTinyShaders_1_1TShaderProgram.html#aee4ca8f1c02e4b923b219addb0ef2c98</field>
+    <field name="keywords">MaxNumShaders TinyShaders::TShaderProgram::MaxNumShaders TinyShaders::TShaderProgram</field>
+    <field name="text">The Maximum number of components a shader program can have It s always 5</field>
+  </doc>
+</add>
