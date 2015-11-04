@@ -5,7 +5,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 //created by ziyad barakat-2015
 #include <Windows.h>
-#include < Gl/GL.h>
+#include <Gl/GL.h>
 //disable annoying warnings about unsafe stdio functions
 #pragma  warning(disable: 4474)
 #pragma  warning(disable: 4996)
@@ -40,12 +40,12 @@
 #define TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS 14
 #define TINYSHADERS_ERROR_INVALID_SOURCE_FILE 15
 
-typedef GLvoid( *parseBlocks_t )( GLuint programHandle ); /**< a callback that can gather all the info about the uniform blocks that are in a shader program*/
+typedef void( *parseBlocks_t )( GLuint programHandle ); /**< a callback that can gather all the info about the uniform blocks that are in a shader program*/
 
 /*
 * print the error message and additional information corresponding to the Error handle
 */
-inline static GLvoid TinyShaders_PrintErrorMessage(GLuint errorNumber, const GLchar* errorMessage = nullptr)
+inline static void TinyShaders_PrintErrorMessage(GLuint errorNumber, const GLchar* errorMessage = nullptr)
 {
 	switch (errorNumber)
 	{
@@ -159,14 +159,14 @@ class tinyShaders
 
 	public:
 
-		tinyShaders( GLvoid ){}
-		~tinyShaders( GLvoid ){}
+		tinyShaders( void ){}
+		~tinyShaders( void ){}
 
 		/*
 		* shuts down TinyShaders. deletes all OpenGL shaders and shader programs 
 		* as well as calling shutdown on all shader and programs and clears all vectors.
 		*/
-		static inline GLvoid Shutdown( GLvoid )
+		static inline void Shutdown( void )
 		{
 			if ( tinyShaders::isInitialized )
 			{
@@ -565,7 +565,7 @@ class tinyShaders
 			return GL_FALSE;
 		}
 
-		static inline GLvoid LoadShaderFromBuffer( const char* name, const GLchar* buffer, GLuint shaderType )
+		static inline void LoadShaderFromBuffer( const char* name, const GLchar* buffer, GLuint shaderType )
 		{
 			if( tinyShaders::isInitialized )
 			{
@@ -621,13 +621,13 @@ class tinyShaders
 					Compile( buffer );
 
 				}
-				shader_t( GLvoid ){}
-				~shader_t( GLvoid ){}
+				shader_t( void ){}
+				~shader_t( void ){}
 
 				/*
 				* compile the shader from a given text file
 				*/
-				inline GLvoid Compile( const GLchar* source )
+				inline void Compile( const GLchar* source )
 				{
 					//if the component hasn't been compiled yet
 					if ( !isCompiled )
@@ -672,7 +672,7 @@ class tinyShaders
 				/*
 				* remove the shader from OpenGL
 				*/
-				inline GLvoid Shutdown( GLvoid )
+				inline void Shutdown( void )
 				{
 					glDeleteShader( handle );
 					isCompiled = GL_FALSE;
@@ -694,7 +694,7 @@ class tinyShaders
 				/*
 				* basic constructor
 				*/
-				shaderProgram_t( GLvoid )
+				shaderProgram_t( void )
 				{
 					iD = 0;
 				};
@@ -726,12 +726,12 @@ class tinyShaders
 					compiled = GL_FALSE;
 				};
 
-				~shaderProgram_t( GLvoid ){}
+				~shaderProgram_t( void ){}
 
 				/*
 				* shut down the shader program. delete it from OpenGL
 				*/
-				inline GLvoid Shutdown( GLvoid )
+				inline void Shutdown( void )
 				{
 					glDeleteProgram( handle );
 
@@ -747,7 +747,7 @@ class tinyShaders
 				/*
 				* compile the OpenGL shader program with the given information
 				*/
-				inline GLboolean Compile( GLvoid )
+				inline GLboolean Compile( void )
 				{
 					handle = glCreateProgram();
 					GLchar errorLog[512];
@@ -807,7 +807,7 @@ class tinyShaders
 		/*
 		* returns a static reference to an instance of TinyShaders
 		*/
-		inline static tinyShaders* GetInstance( GLvoid )
+		inline static tinyShaders* GetInstance( void )
 		{
 			if ( tinyShaders::isInitialized )
 			{
