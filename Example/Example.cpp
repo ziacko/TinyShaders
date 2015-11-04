@@ -4,9 +4,10 @@
 
 int main()
 {
-	windowManager::Initialize();
+	windowManager* manager = new windowManager();
+	//windowManager::Initialize();
 	
-	windowManager::AddWindow("Example");
+	manager->AddWindow("Example");
 	TinyExtender::InitializeExtensions();
 
 	//the shader manager doesn't actually need to be initialized
@@ -16,15 +17,15 @@ int main()
 	
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glPointSize(20.0f);
-	while (!windowManager::GetWindowShouldCloseByName("Example"))
+	while (!manager->GetWindowShouldCloseByName("Example"))
 	{
-		windowManager::PollForEvents();
+		manager->PollForEvents();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_POINTS, 0, 1);
-		windowManager::WindowSwapBuffersByName("Example");
+		manager->WindowSwapBuffersByName("Example");
 	}
 	tinyShaders::Shutdown();
-	windowManager::ShutDown();
+	manager->ShutDown();
 	
 	return 0;
 }

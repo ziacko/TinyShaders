@@ -15,7 +15,7 @@
 #endif
 
 #if defined(__linux__) 
-#include < GL/gl.h>
+#include <GL/gl.h>
 #endif
 
 #include <list>
@@ -40,10 +40,117 @@
 #define TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS 14
 #define TINYSHADERS_ERROR_INVALID_SOURCE_FILE 15
 
-//we need a callback that can gather all the info about the uniform blocks that 
-//are in a shader program
-//this should include 
-typedef GLvoid( *parseBlocks_t )( GLuint programHandle );
+typedef GLvoid( *parseBlocks_t )( GLuint programHandle ); /**< a callback that can gather all the info about the uniform blocks that are in a shader program*/
+
+/*
+* print the error message and additional information corresponding to the Error handle
+*/
+inline static GLvoid TinyShaders_PrintErrorMessage(GLuint errorNumber, const GLchar* errorMessage = nullptr)
+{
+	switch (errorNumber)
+	{
+		case TINYSHADERS_ERROR_NOT_INITIALIZED:
+		{
+			printf("Error: TinyShaders must first be initialized \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_STRING:
+		{
+			printf("Error: given string is invalid \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_SHADER_PROGRAM_NAME:
+		{
+			printf("Error: given shader name is invalid \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_SHADER_PROGRAM_INDEX:
+		{
+			printf("Error: given shader index is invalid \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_SHADER_NAME:
+		{
+			printf("Error: given shader component name is invalid \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_SHADER_INDEX:
+		{
+			printf("Error: given shader component index is invalid \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_FILE_PATH:
+		{
+			printf("Error: given file path is invalid %s \n", errorMessage);
+			break;
+		}
+
+		case TINYSHADERS_ERROR_SHADER_PROGRAM_NOT_FOUND:
+		{
+			printf("Error: shader with given name %s was not found \n", errorMessage);
+			break;
+		}
+
+		case TINYSHADERS_ERROR_SHADER_NOT_FOUND:
+		{
+			printf("Error: shader component with given name %s was not found \n", errorMessage);
+			break;
+		}
+
+		case TINYSHADERS_ERROR_INVALID_SHADER_TYPE:
+		{
+			printf("Error: invalid shader type given \n");
+			break;
+		}
+
+		case TINYSHADERS_ERROR_FAILED_SHADER_LOAD:
+		{
+			printf("Error: failed to compile %s shader component \n", errorMessage);
+			break;
+		}
+
+		case TINYSHADERS_ERROR_FAILED_SHADER_PROGRAM_LINK:
+		{
+			if (errorMessage != nullptr)
+			{
+				printf("Error: failed to link program %s \n", errorMessage);
+			}
+			break;
+		}
+
+		case TINYSHADERS_ERROR_SHADER_ALREADY_EXISTS:
+		{
+			printf("Error: shader component with this name %s already exists \n", errorMessage);
+			break;
+		}
+
+		case TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS:
+		{
+			if (errorMessage != nullptr)
+			{
+				printf("Error: shader with this name %s already exists \n", errorMessage);
+				break;
+			}
+		}
+
+		case TINYSHADERS_ERROR_INVALID_SOURCE_FILE:
+		{
+			printf("Given Source file is invalid");
+			break;
+		}
+
+		default:
+		{
+			break;
+		}
+	}
+}
 
 class tinyShaders
 {
@@ -100,10 +207,10 @@ class tinyShaders
 					}
 					return nullptr;
 				}
-				PrintErrorMessage( TINYSHADERS_ERROR_SHADER_PROGRAM_NOT_FOUND );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_SHADER_PROGRAM_NOT_FOUND );
 				return nullptr;
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 			return nullptr;
 		}
 
@@ -118,10 +225,10 @@ class tinyShaders
 				{
 					return GetInstance()->shaderPrograms[programIndex];
 				}
-				PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_PROGRAM_INDEX );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_PROGRAM_INDEX );
 				return nullptr;
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 			return nullptr;
 		}
 
@@ -141,13 +248,13 @@ class tinyShaders
 							return GetInstance()->shaders[iterator];
 						}
 					}
-					PrintErrorMessage( TINYSHADERS_ERROR_SHADER_NOT_FOUND );
+					TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_SHADER_NOT_FOUND );
 					return nullptr;
 				}
-				PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_NAME );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_NAME );
 				return nullptr;
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 			return nullptr;
 		}
 
@@ -162,10 +269,10 @@ class tinyShaders
 				{
 					return GetInstance()->shaders[shaderIndex];
 				}
-				PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_INDEX );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_INDEX );
 				return nullptr;
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 			return nullptr;
 		}
 
@@ -182,11 +289,11 @@ class tinyShaders
 					{
 						shader_t* newShader = new shader_t( name, shaderType, shaderFile );
 					}
-					PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_TYPE, GetInstance()->ShaderTypeToString( shaderType ) );
+					TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_TYPE, GetInstance()->ShaderTypeToString( shaderType ) );
 				}
-				PrintErrorMessage( TINYSHADERS_ERROR_INVALID_STRING );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_STRING );
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 		}
 
 		/*
@@ -288,12 +395,12 @@ class tinyShaders
 				}
 				else
 				{
-					PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH );
+					TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH );
 				}
 			}
 			else
 			{
-				PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 			}
 		}
 
@@ -407,7 +514,7 @@ class tinyShaders
 				shaderProgram_t* newShaderProgram = new shaderProgram_t( shaderName, inputs, outputs, shaders );
 				delete newShaderProgram;
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 		}
 
 		/*
@@ -471,13 +578,13 @@ class tinyShaders
 							shader_t* newShader = new shader_t( name, buffer, shaderType );	
 							delete newShader;				
 						}
-						PrintErrorMessage( TINYSHADERS_ERROR_SHADER_NOT_FOUND );
+						TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_SHADER_NOT_FOUND );
 					}
-					PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_NAME );
+					TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SHADER_NAME );
 				}
-				PrintErrorMessage( TINYSHADERS_ERROR_INVALID_STRING );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_STRING );
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
 		}
 
 		static inline GLboolean SetShaderBlockParseEvent( parseBlocks_t shaderBlockParse )
@@ -539,7 +646,7 @@ class tinyShaders
 
 							if ( successful != GL_TRUE )
 							{
-								PrintErrorMessage( TINYSHADERS_ERROR_FAILED_SHADER_LOAD, GetInstance()->ShaderTypeToString( type ) );
+								TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_FAILED_SHADER_LOAD, GetInstance()->ShaderTypeToString( type ) );
 								printf( "%s\n", errorLog );
 							}
 
@@ -552,13 +659,13 @@ class tinyShaders
 						}
 						else
 						{
-							PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SOURCE_FILE );
+							TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SOURCE_FILE );
 						}
 					}
 					else
 					{
 						//either the file name doesn't exist or the component has already been loaded
-						PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH, filePath );
+						TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH, filePath );
 					}
 				}
 
@@ -673,7 +780,7 @@ class tinyShaders
 
 						if ( !successful )
 						{
-							PrintErrorMessage( TINYSHADERS_ERROR_FAILED_SHADER_PROGRAM_LINK, name );
+							TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_FAILED_SHADER_PROGRAM_LINK, name );
 							printf( "%s\n", errorLog );
 							return GL_FALSE;
 						}
@@ -683,7 +790,7 @@ class tinyShaders
 						iD = GetInstance()->shaderPrograms.size() - 1;
 						return GL_TRUE;
 					}
-					PrintErrorMessage( TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS, name );
+					TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS, name );
 					return GL_FALSE;
 				}
 
@@ -713,116 +820,6 @@ class tinyShaders
 		}
 
 		/*
-		* print the error message and additional information corresponding to the Error handle
-		*/
-		inline static GLvoid PrintErrorMessage( GLuint errorNumber, const GLchar* errorMessage = nullptr )
-		{
-			switch ( errorNumber )
-			{
-				case TINYSHADERS_ERROR_NOT_INITIALIZED:
-				{
-					printf( "Error: TinyShaders must first be initialized \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_STRING:
-				{
-					printf( "Error: given string is invalid \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_SHADER_PROGRAM_NAME:
-				{
-					printf( "Error: given shader name is invalid \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_SHADER_PROGRAM_INDEX:
-				{
-					printf( "Error: given shader index is invalid \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_SHADER_NAME:
-				{
-					printf( "Error: given shader component name is invalid \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_SHADER_INDEX:
-				{
-					printf( "Error: given shader component index is invalid \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_FILE_PATH:
-				{
-					printf( "Error: given file path is invalid %s \n", errorMessage );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_SHADER_PROGRAM_NOT_FOUND:
-				{
-					printf( "Error: shader with given name %s was not found \n", errorMessage );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_SHADER_NOT_FOUND:
-				{
-					printf( "Error: shader component with given name %s was not found \n", errorMessage );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_INVALID_SHADER_TYPE:
-				{
-					printf( "Error: invalid shader type given \n" );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_FAILED_SHADER_LOAD:
-				{
-					printf( "Error: failed to compile %s shader component \n", errorMessage );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_FAILED_SHADER_PROGRAM_LINK:
-				{
-					if ( errorMessage != nullptr )
-					{
-						printf( "Error: failed to link program %s \n", errorMessage );
-					}
-					break;
-				}
-
-				case TINYSHADERS_ERROR_SHADER_ALREADY_EXISTS:
-				{
-					printf( "Error: shader component with this name %s already exists \n", errorMessage );
-					break;
-				}
-
-				case TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS:
-				{
-					if ( errorMessage != nullptr )
-					{
-						printf( "Error: shader with this name %s already exists \n", errorMessage );
-						break;
-					}
-				}
-
-				case TINYSHADERS_ERROR_INVALID_SOURCE_FILE:
-				{
-					printf( "Given Source file is invalid" );
-					break;
-				}
-
-				default:
-				{
-					break;
-				}
-			}
-		}
-
-		/*
 		* convert the given file to a single dimension c-string buffer
 		*/
 		inline GLchar* FileToBuffer( const GLchar* path ) const
@@ -831,7 +828,7 @@ class tinyShaders
 
 			if ( file == nullptr )
 			{
-				PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH, path );
+				TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH, path );
 				//printf( "Error: cannot open file %s for reading \n", Path );
 				return nullptr;
 			}
@@ -884,7 +881,7 @@ class tinyShaders
 
 				return GL_FALSE;
 			}
-			PrintErrorMessage( TINYSHADERS_ERROR_INVALID_STRING );
+			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_STRING );
 			return GL_FALSE;
 		}
 		
