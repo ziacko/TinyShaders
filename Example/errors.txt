@@ -4,8 +4,8 @@ In file included from Example.cpp:1:0:
    return glXGetProcAddress(ProcName);
                                     ^
 In file included from Example.cpp:2:0:
-../TinyShaders.h: In static member function ‘static void tinyShaders::LoadShaderProgramsFromConfigFile(const GLchar*)’:
-../TinyShaders.h:384:59: warning: too many arguments for format [-Wformat-extra-args]
+../include/TinyShaders.h: In static member function ‘static void tinyShaders::LoadShaderProgramsFromConfigFile(const GLchar*)’:
+../include/TinyShaders.h:384:59: warning: too many arguments for format [-Wformat-extra-args]
           fscanf( pConfigFile, "%*[^\n]\n %*[^\n]\n", NULL );
                                                            ^
 In file included from /usr/include/GL/glx.h:30:0,
