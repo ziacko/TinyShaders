@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+#include <fstream>
 
 #define TINYSHADERS_ERROR_NOT_INITIALIZED 1
 #define TINYSHADERS_ERROR_INVALID_STRING 2
@@ -39,6 +41,8 @@
 #define TINYSHADERS_ERROR_SHADER_ALREADY_EXISTS 13
 #define TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS 14
 #define TINYSHADERS_ERROR_INVALID_SOURCE_FILE 15
+#define TINYSHADERS_H_DEFAULT_PROGRAM_BINARY_EXTENSION ".glbin"
+#define TINYSHADERS_H_DEFAULT_BINARY_PATH "./shaders/"
 
 typedef void( *parseBlocks_t )( GLuint programHandle ); /**< a callback that can gather all the info about the uniform blocks that are in a shader program*/
 
@@ -299,7 +303,7 @@ class tinyShaders
 		/*
 		* loads all shaders and shader programs specified in a custom configuration file
 		*/
-		static inline void LoadShaderProgramsFromConfigFile( const GLchar* configFile )
+		static inline void LoadShaderProgramsFromConfigFile( const GLchar* configFile, bool saveBinary = false)
 		{
 			if ( GetInstance()->isInitialized )
 			{
@@ -387,7 +391,7 @@ class tinyShaders
 								}
 							}
 
-							shaderProgram_t* newShaderProgram = new shaderProgram_t( programName, inputs, outputs, shaders );
+							shaderProgram_t* newShaderProgram = new shaderProgram_t( programName, inputs, outputs, shaders, saveBinary);
 							//get shader block names
 						}
 					}
@@ -500,7 +504,8 @@ class tinyShaders
 			const GLchar* fragmentShaderName,
 			const GLchar* geometryShaderName,
 			const GLchar* tessContShaderName,
-			const GLchar* tessEvalShaderName )
+			const GLchar* tessEvalShaderName,
+			bool saveBinary = false)
 		{
 			if ( tinyShaders::isInitialized )
 			{
@@ -511,7 +516,7 @@ class tinyShaders
 				shaders.push_back( GetShaderByName( tessContShaderName ) );
 				shaders.push_back( GetShaderByName( tessEvalShaderName ) );
 
-				shaderProgram_t* newShaderProgram = new shaderProgram_t( shaderName, inputs, outputs, shaders );
+				shaderProgram_t* newShaderProgram = new shaderProgram_t( shaderName, inputs, outputs, shaders, saveBinary );
 				delete newShaderProgram;
 			}
 			TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_NOT_INITIALIZED );
@@ -705,12 +710,13 @@ class tinyShaders
 				shaderProgram_t( const GLchar* shaderName,
 					std::vector< const GLchar* > programInputs,
 					std::vector< const GLchar* > programOutputs,
-					std::vector< shader_t* > programShaders ) :
+					std::vector< shader_t* > programShaders,
+					bool saveBinary = false) :
 					name( shaderName ), inputs( programInputs ),
 					outputs( programOutputs ), shaders( programShaders )
 				{
 					compiled = GL_FALSE;
-					Compile();
+					Compile(saveBinary);
 					//get number of uniform blocks
 					if ( GetInstance()->shaderBlocksEvent != nullptr )
 					{
@@ -747,7 +753,7 @@ class tinyShaders
 				/*
 				* compile the OpenGL shader program with the given information
 				*/
-				inline GLboolean Compile( void )
+				inline GLboolean Compile( bool saveBinary )
 				{
 					handle = glCreateProgram();
 					GLchar errorLog[512];
@@ -774,6 +780,11 @@ class tinyShaders
 							glBindFragDataLocation( handle, i, outputs[i] );
 						}
 
+						if (saveBinary)
+						{
+							glProgramParameteri(handle, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
+						}
+
 						glLinkProgram( handle );
 						glGetProgramiv( handle, GL_LINK_STATUS, &successful );
 						glGetProgramInfoLog( handle, sizeof( errorLog ), 0, errorLog );
@@ -785,6 +796,27 @@ class tinyShaders
 							return GL_FALSE;
 						}
 						//if a shader successfully compiles then it will add itself to storage
+
+						if (saveBinary)
+						{
+							GLint binarySize = 0;
+							glGetProgramiv(handle, GL_PROGRAM_BINARY_LENGTH, &binarySize);
+
+							unsigned char* buffer = new unsigned char[binarySize];
+							GLenum binaryFormat = GL_NONE;
+							glGetProgramBinary(handle, binarySize, NULL, &binaryFormat, buffer);
+
+							GLchar* path =  new GLchar[binarySize];
+							//memset(path, 1, binarySize);
+
+							strcpy(path, TINYSHADERS_H_DEFAULT_BINARY_PATH);
+							strcat(path, name);
+							strcat(path, TINYSHADERS_H_DEFAULT_PROGRAM_BINARY_EXTENSION);
+
+							FILE* file = fopen(path, "wb");
+							fwrite(buffer, sizeof(unsigned char), binarySize, file);
+							fclose(file);
+						}
 						compiled = GL_TRUE;
 						GetInstance()->shaderPrograms.push_back( this );
 						iD = GetInstance()->shaderPrograms.size() - 1;
@@ -844,6 +876,21 @@ class tinyShaders
 			fread( buffer, sizeof( GLchar ), FileLength, file );
 
 			fclose( file );
+			return buffer;
+		}
+
+		inline GLchar* FileToBuffer2(const GLchar* path) const
+		{
+			std::ifstream file;
+			GLchar* buffer = NULL;
+			file.open(path, std::ios::binary | std::ios::ate);
+			GLuint size = file.tellg();
+			file.seekg(0, std::ios::beg);
+
+			if (file.read(buffer, size))
+			{
+				return nullptr;
+			}
 			return buffer;
 		}
 

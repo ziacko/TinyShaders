@@ -11,7 +11,7 @@ int main()
 	TinyExtender::InitializeExtensions();
 
 	//the shader manager doesn't actually need to be initialized
-	tinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt");
+	tinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt", true);
 
 	glUseProgram(tinyShaders::GetShaderProgramByIndex(0)->handle);
 	
