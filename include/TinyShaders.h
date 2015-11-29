@@ -25,6 +25,7 @@
 #include <string.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #define TINYSHADERS_ERROR_NOT_INITIALIZED 1
 #define TINYSHADERS_ERROR_INVALID_STRING 2
@@ -41,8 +42,13 @@
 #define TINYSHADERS_ERROR_SHADER_ALREADY_EXISTS 13
 #define TINYSHADERS_ERROR_SHADER_PROGRAM_ALREADY_EXISTS 14
 #define TINYSHADERS_ERROR_INVALID_SOURCE_FILE 15
-#define TINYSHADERS_H_DEFAULT_PROGRAM_BINARY_EXTENSION ".glbin"
-#define TINYSHADERS_H_DEFAULT_BINARY_PATH "./shaders/"
+//the macros below are safe for editing
+#define TINYSHADERS_DEFAULT_PROGRAM_BINARY_EXTENSION ".glbin"
+#define TINYSHADERS_DEFAULT_BINARY_PATH "./Shaders/"
+#define TINYSHADERS_DEFAULT_BINARY_CONFIG "Binaries.txt"
+#define TINYSHADERS_DEFAULT_PROGRAM_PATH "Shaders.txt"
+
+#define TINYSHADERS_MAX_NUM_SHADER_COMPONENTS 5						/**< The Maximum number of components a shader program can have. It's always 5*/
 
 typedef void( *parseBlocks_t )( GLuint programHandle ); /**< a callback that can gather all the info about the uniform blocks that are in a shader program*/
 
@@ -303,11 +309,11 @@ class tinyShaders
 		/*
 		* loads all shaders and shader programs specified in a custom configuration file
 		*/
-		static inline void LoadShaderProgramsFromConfigFile( const GLchar* configFile, bool saveBinary = false)
+		static inline void LoadShaderProgramsFromConfigFile( const GLchar* configPath, bool saveBinary = false )
 		{
 			if ( GetInstance()->isInitialized )
 			{
-				FILE* pConfigFile = fopen( configFile, "r" );
+				FILE* pConfigFile = fopen( configPath, "r" );
 				GLuint numInputs = 0;
 				GLuint numOutputs = 0;
 				GLuint numPrograms = 0;
@@ -408,6 +414,54 @@ class tinyShaders
 			}
 		}
 
+		static inline void LoadProgramBinariesFromConfigFile( const GLchar* configPath )
+		{
+			//open a file stream to binaries.txt
+			GLuint numBinaries;
+			FILE* configFile = NULL;
+			configFile = fopen(configPath, "r");
+			fscanf(configFile, "%i", &numBinaries);
+			fscanf(configFile, "%*[^\n]\n %*[^\n]\n", NULL);
+			for (int iter = 0; iter < numBinaries; iter++)
+			{
+				GLchar binaryPath[255];
+				fscanf(configFile, "%s \n", binaryPath);
+
+				FILE* binaryFile = fopen(binaryPath, "rb");
+				//std::ifstream file;
+				GLchar binaryName[255];
+				GLuint binarySize = 0;
+				GLuint size = 0;
+				GLuint binaryFormat = 0;
+				
+				fscanf(binaryFile, "%s \n", binaryName);
+				fscanf(binaryFile, "%i \n", &binarySize);
+				fscanf(binaryFile, "%i \n", &binaryFormat);
+
+				void* binaryBuffer = (void*)malloc(binarySize);
+				fread(binaryBuffer, binarySize, 1, binaryFile);
+				fclose(binaryFile);
+
+				//load the buffer into OpenGL
+				GLuint programHandle = glCreateProgram();
+				glProgramBinary(programHandle, binaryFormat, binaryBuffer, binarySize);				
+				free(binaryBuffer);
+				GLint isSuccessful = false;
+
+				glGetProgramiv(programHandle, GL_LINK_STATUS, &isSuccessful);
+
+				if (isSuccessful)
+				{
+					//create a program object and load into the list
+					shaderProgram_t* newProgram = new shaderProgram_t(binaryName, programHandle);
+					newProgram->compiled = GL_TRUE;
+					GetInstance()->shaderPrograms.push_back(newProgram);
+					newProgram->iD = GetInstance()->shaderPrograms.size() - 1;
+				}
+			}
+			fclose(configFile);
+		}
+
 		static inline void LoadShadersFromConfigFile( const GLchar* configFile )
 		{
 			if( tinyShaders::isInitialized )
@@ -505,7 +559,7 @@ class tinyShaders
 			const GLchar* geometryShaderName,
 			const GLchar* tessContShaderName,
 			const GLchar* tessEvalShaderName,
-			bool saveBinary = false)
+			bool saveBinary = false )
 		{
 			if ( tinyShaders::isInitialized )
 			{
@@ -707,12 +761,12 @@ class tinyShaders
 				/*
 				* uses the given values to create an OpenGL shader program
 				*/
-				shaderProgram_t( const GLchar* shaderName,
+				shaderProgram_t( const GLchar* programName,
 					std::vector< const GLchar* > programInputs,
 					std::vector< const GLchar* > programOutputs,
 					std::vector< shader_t* > programShaders,
 					bool saveBinary = false) :
-					name( shaderName ), inputs( programInputs ),
+					name( programName ), inputs( programInputs ),
 					outputs( programOutputs ), shaders( programShaders )
 				{
 					compiled = GL_FALSE;
@@ -727,10 +781,16 @@ class tinyShaders
 				/*
 				* another bare bones constructor
 				*/
-				shaderProgram_t( const GLchar* shaderName ) : name( shaderName )
+				shaderProgram_t( const GLchar* programName ) : name( programName )
 				{
 					compiled = GL_FALSE;
 				};
+
+				shaderProgram_t(const GLchar* programName, GLuint programHandle) :
+					name(programName), handle(programHandle)
+				{
+
+				}
 
 				~shaderProgram_t( void ){}
 
@@ -802,19 +862,24 @@ class tinyShaders
 							GLint binarySize = 0;
 							glGetProgramiv(handle, GL_PROGRAM_BINARY_LENGTH, &binarySize);
 
-							unsigned char* buffer = new unsigned char[binarySize];
+							void* buffer = nullptr;
+							buffer = (void*)malloc(binarySize);
 							GLenum binaryFormat = GL_NONE;
+							
 							glGetProgramBinary(handle, binarySize, NULL, &binaryFormat, buffer);
 
 							GLchar* path =  new GLchar[binarySize];
-							//memset(path, 1, binarySize);
+							memset(path, 1, binarySize);
 
-							strcpy(path, TINYSHADERS_H_DEFAULT_BINARY_PATH);
+							strcpy(path, TINYSHADERS_DEFAULT_BINARY_PATH);
 							strcat(path, name);
-							strcat(path, TINYSHADERS_H_DEFAULT_PROGRAM_BINARY_EXTENSION);
+							strcat(path, TINYSHADERS_DEFAULT_PROGRAM_BINARY_EXTENSION);
 
 							FILE* file = fopen(path, "wb");
-							fwrite(buffer, sizeof(unsigned char), binarySize, file);
+							fprintf(file, "%s\n", name);
+							fprintf(file, "%i\n", binarySize);
+							fprintf(file, "%i\n", binaryFormat);
+							fwrite(buffer, binarySize, 1, file);
 							fclose(file);
 						}
 						compiled = GL_TRUE;
@@ -828,8 +893,7 @@ class tinyShaders
 
 				const GLchar*						name;				/**< The name of the shader program */
 				GLuint								handle;				/**< The OpenGL handle to the shader program */
-				GLuint								iD;					/**< The ID of the shader program */
-				static const GLuint					maxNumShaders;		/**< The Maximum number of components a shader program can have. It's always 5*/
+				GLuint								iD;					/**< The ID of the shader program */	
 				GLboolean							compiled;			/**< Whether the shader program has been linked successfully */
 				std::vector< const GLchar* >		inputs;				/**< The inputs of the shader program as a vector of strings */
 				std::vector< const GLchar* >		outputs;			/**< The outputs of the shader program as a vector of strings */
@@ -876,21 +940,6 @@ class tinyShaders
 			fread( buffer, sizeof( GLchar ), FileLength, file );
 
 			fclose( file );
-			return buffer;
-		}
-
-		inline GLchar* FileToBuffer2(const GLchar* path) const
-		{
-			std::ifstream file;
-			GLchar* buffer = NULL;
-			file.open(path, std::ios::binary | std::ios::ate);
-			GLuint size = file.tellg();
-			file.seekg(0, std::ios::beg);
-
-			if (file.read(buffer, size))
-			{
-				return nullptr;
-			}
 			return buffer;
 		}
 
@@ -983,6 +1032,5 @@ class tinyShaders
 
 GLboolean tinyShaders::isInitialized = GL_FALSE;
 tinyShaders* tinyShaders::instance = nullptr;
-const GLuint tinyShaders::shaderProgram_t::maxNumShaders = 5;
 parseBlocks_t tinyShaders::shaderBlocksEvent = nullptr;
 #endif
