@@ -1,6 +1,11 @@
 #version 420
-in vec2 vUV;
-in vec4 vPosition;
+
+in defaultBlock
+{
+	vec4 position;
+	vec2 UV;
+
+} inBlock;
 
 out vec4 outColour;
 

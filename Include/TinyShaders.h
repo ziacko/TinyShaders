@@ -1,11 +1,11 @@
-//created my Ziyad Barakat 2015
+//created by Ziyad Barakat 2015
 
 #ifndef TINY_SHADERS_H
 #define TINY_SHADERS_H
+
 #if defined(_WIN32) || defined(_WIN64)
-//created by ziyad barakat-2015
 #include <Windows.h>
-#include <Gl/GL.h>
+#include <gl/GL.h>
 //disable annoying warnings about unsafe stdio functions
 #pragma  warning(disable: 4474)
 #pragma  warning(disable: 4996)
@@ -422,7 +422,7 @@ class tinyShaders
 			configFile = fopen(configPath, "r");
 			fscanf(configFile, "%i", &numBinaries);
 			fscanf(configFile, "%*[^\n]\n %*[^\n]\n", NULL);
-			for (int iter = 0; iter < numBinaries; iter++)
+			for (unsigned int iter = 0; iter < numBinaries; iter++)
 			{
 				GLchar binaryPath[255];
 				fscanf(configFile, "%s \n", binaryPath);
@@ -662,88 +662,88 @@ class tinyShaders
 		* a TShader is essentially an OpenGL shader
 		*/
 		struct shader_t
+		{
+			shader_t( const GLchar* saderName, GLuint shaderType, const GLchar* shaderFilePath ) :
+				name( saderName )
 			{
-				shader_t( const GLchar* saderName, GLuint shaderType, const GLchar* shaderFilePath ) :
-					name( saderName )
-				{
-					type = shaderType;
-					isCompiled = GL_FALSE;
-					filePath = shaderFilePath;
-					Compile( GetInstance()->FileToBuffer( shaderFilePath ) );
-				}
+				type = shaderType;
+				isCompiled = GL_FALSE;
+				filePath = shaderFilePath;
+				Compile( GetInstance()->FileToBuffer( shaderFilePath ) );
+			}
 
-				shader_t( const GLchar* shaderName, const GLchar* buffer, GLuint shaderType ) 
-					: name( shaderName ), type( shaderType )
-				{
-					type = shaderType;
-					isCompiled = GL_FALSE;
-					Compile( buffer );
+			shader_t( const GLchar* shaderName, const GLchar* buffer, GLuint shaderType ) 
+				: name( shaderName ), type( shaderType )
+			{
+				type = shaderType;
+				isCompiled = GL_FALSE;
+				Compile( buffer );
 
-				}
-				shader_t( void ){}
-				~shader_t( void ){}
+			}
+			shader_t( void ){}
+			~shader_t( void ){}
 
-				/*
-				* compile the shader from a given text file
-				*/
-				inline void Compile( const GLchar* source )
+			/*
+			* compile the shader from a given text file
+			*/
+			inline void Compile( const GLchar* source )
+			{
+				//if the component hasn't been compiled yet
+				if ( !isCompiled )
 				{
-					//if the component hasn't been compiled yet
-					if ( !isCompiled )
+					GLchar errorLog[512];
+					GLint successful;
+
+					if ( source != nullptr )
 					{
-						GLchar errorLog[512];
-						GLint successful;
+						handle = glCreateShader( type );
+						glShaderSource( handle, 1, ( const GLchar** )&source, 0 );
+						glCompileShader( handle );
 
-						if ( source != nullptr )
+						glGetShaderiv( handle, GL_COMPILE_STATUS, &successful );
+						glGetShaderInfoLog( handle, sizeof( errorLog ), 0, errorLog );
+
+						if ( successful != GL_TRUE )
 						{
-							handle = glCreateShader( type );
-							glShaderSource( handle, 1, ( const GLchar** )&source, 0 );
-							glCompileShader( handle );
-
-							glGetShaderiv( handle, GL_COMPILE_STATUS, &successful );
-							glGetShaderInfoLog( handle, sizeof( errorLog ), 0, errorLog );
-
-							if ( successful != GL_TRUE )
-							{
-								TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_FAILED_SHADER_LOAD, GetInstance()->ShaderTypeToString( type ) );
-								printf( "%s\n", errorLog );
-							}
-
-							else
-							{
-								isCompiled = GL_TRUE;
-								GetInstance()->shaders.push_back( this );
-								iD = GetInstance()->shaders.size() - 1;
-							}	
+							TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_FAILED_SHADER_LOAD, GetInstance()->ShaderTypeToString( type ) );
+							printf( "%s\n", errorLog );
 						}
+
 						else
 						{
-							TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SOURCE_FILE );
-						}
+							isCompiled = GL_TRUE;
+							GetInstance()->shaders.push_back( this );
+							iD = GetInstance()->shaders.size() - 1;
+						}	
 					}
 					else
 					{
-						//either the file name doesn't exist or the component has already been loaded
-						TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH, filePath );
+						TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_SOURCE_FILE );
 					}
 				}
-
-				/*
-				* remove the shader from OpenGL
-				*/
-				inline void Shutdown( void )
+				else
 				{
-					glDeleteShader( handle );
-					isCompiled = GL_FALSE;
+					//either the file name doesn't exist or the component has already been loaded
+					TinyShaders_PrintErrorMessage( TINYSHADERS_ERROR_INVALID_FILE_PATH, filePath );
 				}
+			}
 
-				const GLchar*		name;			/**<The name of the shader component */
-				const GLchar*		filePath;		/**<The FilePath of the component*/
-				GLuint				handle;			/**<The handle to the shader in OpenGL*/
-				GLuint				type;			/**<The type of shader ( Vertex, Fragment, etc.)*/
-				GLuint				iD;				/**<The ID of the shader*/
-				GLboolean			isCompiled;		/**<Whether the shader has been compiled*/
-			};
+			/*
+			* remove the shader from OpenGL
+			*/
+			inline void Shutdown( void )
+			{
+				glDeleteShader( handle );
+				isCompiled = GL_FALSE;
+			}
+
+			const GLchar*		name;			/**<The name of the shader component */
+			const GLchar*		filePath;		/**<The FilePath of the component*/
+			GLuint				handle;			/**<The handle to the shader in OpenGL*/
+			GLuint				type;			/**<The type of shader ( Vertex, Fragment, etc.)*/
+			GLuint				iD;				/**<The ID of the shader*/
+			GLboolean			isCompiled;		/**<Whether the shader has been compiled*/
+		};
 
 		/*
 		* a TShaderProgram is is essentially an OpengL shader program 
