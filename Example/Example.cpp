@@ -11,11 +11,12 @@ int main()
 	TinyExtender::InitializeExtensions();
 
 	//the shader manager doesn't actually need to be initialized
-	tinyShaders::LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt", true);
+	tinyShaders shaderManger = tinyShaders();
+	shaderManger.LoadShaderProgramsFromConfigFile("Shaders/Shaders.txt", true);
 
 	//tinyShaders::LoadProgramBinariesFromConfigFile("./Shaders/Binaries.txt");
 
-	glUseProgram(tinyShaders::GetShaderProgramByIndex(0)->handle);
+	glUseProgram(shaderManger.GetShaderProgramByIndex(0)->handle);
 	
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glPointSize(20.0f);
@@ -26,7 +27,7 @@ int main()
 		glDrawArrays(GL_POINTS, 0, 1);
 		manager->WindowSwapBuffersByName("Example");
 	}
-	tinyShaders::Shutdown();
+	shaderManger.Shutdown();
 	manager->ShutDown();
 	
 	return 0;
