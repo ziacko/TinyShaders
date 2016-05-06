@@ -2,9 +2,11 @@
 #include "TinyShaders.h"
 #include <TinyWindow.h>
 
+using namespace TinyWindow;
+
 int main()
 {
-	windowManager* manager = new windowManager();
+	TinyWindow::windowManager* manager = new windowManager();
 	//windowManager::Initialize();
 	
 	manager->AddWindow("Example");
