@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include (GNUInstallDirs)
 include (CMakePackageConfigHelpers)
 
-set(PROJECT_LABEL "Example")
+set(PROJECT_LABEL "TinyShaders Example")
 
 #enable_testing()
 
@@ -60,5 +60,5 @@ link_libraries (${LIBS})
 SET ( SOURCE Example.cpp)
 SET ( HEADER_FILES ${TINYSHADERS_INCLUDE_DIR}/TinyShaders.h)
 
-add_executable(Example ${SOURCE} ${HEADER_FILES})
-set_property(TARGET Example PROPERTY OUTPUT_NAME "Example")
+add_executable(Example_TinyShaders ${SOURCE} ${HEADER_FILES})
+set_property(TARGET Example_TinyShaders PROPERTY OUTPUT_NAME "Example")

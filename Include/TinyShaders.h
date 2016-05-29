@@ -378,6 +378,7 @@ class tinyShaders
 								//if the shader hasn't been loaded already then make a new one
 								if( !ShaderExists( shaderName ) )
 								{
+									//remove printf calls
 									//get type
 									fscanf( pConfigFile, "%s\n", shaderType );
 									printf( "%s\n", shaderType );
@@ -448,7 +449,7 @@ class tinyShaders
 				free(binaryBuffer);
 				GLint isSuccessful = false;
 
-				glGetProgramiv(programHandle, gl_link_status, &isSuccessful);
+				glGetProgramiv(programHandle, GL_LINK_STATUS, &isSuccessful);
 
 				if (isSuccessful)
 				{
@@ -700,7 +701,7 @@ class tinyShaders
 						glShaderSource( handle, 1, ( const GLchar** )&source, 0 );
 						glCompileShader( handle );
 
-						glGetShaderiv( handle, gl_compile_status, &successful );
+						glGetShaderiv( handle, GL_COMPILE_STATUS, &successful );
 						glGetShaderInfoLog( handle, sizeof( errorLog ), 0, errorLog );
 
 						if ( successful != GL_TRUE )
@@ -842,11 +843,11 @@ class tinyShaders
 
 						if (saveBinary)
 						{
-							glProgramParameteri(handle, gl_program_binary_retrievable_hint, GL_TRUE);
+							glProgramParameteri(handle, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
 						}
 
 						glLinkProgram( handle );
-						glGetProgramiv( handle, gl_link_status, &successful );
+						glGetProgramiv( handle, GL_LINK_STATUS, &successful );
 						
 
 						if ( !successful )
@@ -861,7 +862,7 @@ class tinyShaders
 						if (saveBinary)
 						{
 							GLint binarySize = 0;
-							glGetProgramiv(handle, gl_program_binary_length, &binarySize);
+							glGetProgramiv(handle, GL_PROGRAM_BINARY_LENGTH, &binarySize);
 
 							void* buffer = nullptr;
 							buffer = (void*)malloc(binarySize);
@@ -953,27 +954,27 @@ class tinyShaders
 			{
 				if ( !strcmp( typeString, "Vertex" ) )
 				{
-					return gl_vertex_shader;
+					return GL_VERTEX_SHADER;
 				}
 
 				if ( !strcmp( typeString, "Fragment" ) )
 				{
-					return gl_fragment_shader;
+					return GL_FRAGMENT_SHADER;
 				}
 
 				if ( !strcmp( typeString, "Geometry" ) )
 				{
-					return gl_geometry_shader;
+					return GL_GEOMETRY_SHADER;
 				}
 
 				if ( !strcmp( typeString, "Tessellation Control" ) )
 				{
-					return gl_tess_control_shader;
+					return GL_TESS_CONTROL_SHADER;
 				}
 
 				if ( !strcmp( typeString, "Tessellation Evaluation" ) )
 				{
-					return gl_tess_evaluation_shader;
+					return GL_TESS_EVALUATION_SHADER;
 				}
 
 				return GL_FALSE;
@@ -989,27 +990,27 @@ class tinyShaders
 		{
 			switch ( shaderType )
 			{
-				case gl_vertex_shader:
+				case GL_VERTEX_SHADER:
 				{
 					return "Vertex";
 				}
 
-				case gl_fragment_shader:
+				case GL_FRAGMENT_SHADER:
 				{
 					return "Fragment";
 				}
 				
-				case gl_geometry_shader:
+				case GL_GEOMETRY_SHADER:
 				{
 					return "Geometry";
 				}
 
-				case gl_tess_control_shader:
+				case GL_TESS_CONTROL_SHADER:
 				{
 					return "Tessellation Control";
 				}
 
-				case gl_tess_evaluation_shader:
+				case GL_TESS_EVALUATION_SHADER:
 				{
 					return "Tessellation Evaluation";
 				}
