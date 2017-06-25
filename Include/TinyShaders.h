@@ -55,7 +55,7 @@ typedef void( *parseBlocks_t )( GLuint programHandle ); /**< a callback that can
 /*
 * print the error message and additional information corresponding to the Error handle
 */
-inline static void TinyShaders_PrintErrorMessage(GLuint errorNumber, const GLchar* errorMessage = nullptr)
+inline static void TinyShaders_PrintErrorMessage(GLuint errorNumber, const char* errorMessage = nullptr)
 {
 	switch (errorNumber)
 	{
@@ -363,7 +363,7 @@ class tinyShaders
 
 							//get number of shaders
 							fscanf( pConfigFile, "%i\n", &numShaders );
-							printf( "%i\n", numShaders );
+							printf( "%u\n", numShaders );
 
 							for( GLuint iterator = 0; iterator <numShaders; iterator++ )
 							{
@@ -449,7 +449,7 @@ class tinyShaders
 				free(binaryBuffer);
 				GLint isSuccessful = false;
 
-				glGetProgramiv(programHandle, GL_LINK_STATUS, &isSuccessful);
+				glGetProgramiv(programHandle, gl_link_status, &isSuccessful);
 
 				if (isSuccessful)
 				{
@@ -701,7 +701,7 @@ class tinyShaders
 						glShaderSource( handle, 1, ( const GLchar** )&source, 0 );
 						glCompileShader( handle );
 
-						glGetShaderiv( handle, GL_COMPILE_STATUS, &successful );
+						glGetShaderiv( handle, gl_compile_status, &successful );
 						glGetShaderInfoLog( handle, sizeof( errorLog ), 0, errorLog );
 
 						if ( successful != GL_TRUE )
@@ -843,11 +843,11 @@ class tinyShaders
 
 						if (saveBinary)
 						{
-							glProgramParameteri(handle, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
+							glProgramParameteri(handle, gl_program_binary_retrievable_hint, GL_TRUE);
 						}
 
 						glLinkProgram( handle );
-						glGetProgramiv( handle, GL_LINK_STATUS, &successful );
+						glGetProgramiv( handle, gl_link_status, &successful );
 						
 
 						if ( !successful )
@@ -862,7 +862,7 @@ class tinyShaders
 						if (saveBinary)
 						{
 							GLint binarySize = 0;
-							glGetProgramiv(handle, GL_PROGRAM_BINARY_LENGTH, &binarySize);
+							glGetProgramiv(handle, gl_program_binary_length, &binarySize);
 
 							void* buffer = nullptr;
 							buffer = (void*)malloc(binarySize);
@@ -883,6 +883,7 @@ class tinyShaders
 							fprintf(file, "%i\n", binaryFormat);
 							fwrite(buffer, binarySize, 1, file);
 							fclose(file);
+							delete[] path;
 						}
 						compiled = GL_TRUE;
 						GetInstance()->shaderPrograms.push_back( this );
@@ -954,27 +955,27 @@ class tinyShaders
 			{
 				if ( !strcmp( typeString, "Vertex" ) )
 				{
-					return GL_VERTEX_SHADER;
+					return gl_vertex_shader;
 				}
 
 				if ( !strcmp( typeString, "Fragment" ) )
 				{
-					return GL_FRAGMENT_SHADER;
+					return gl_fragment_shader;
 				}
 
 				if ( !strcmp( typeString, "Geometry" ) )
 				{
-					return GL_GEOMETRY_SHADER;
+					return gl_geometry_shader;
 				}
 
 				if ( !strcmp( typeString, "Tessellation Control" ) )
 				{
-					return GL_TESS_CONTROL_SHADER;
+					return gl_tess_control_shader;
 				}
 
 				if ( !strcmp( typeString, "Tessellation Evaluation" ) )
 				{
-					return GL_TESS_EVALUATION_SHADER;
+					return gl_tess_evaluation_shader;
 				}
 
 				return GL_FALSE;
@@ -990,27 +991,27 @@ class tinyShaders
 		{
 			switch ( shaderType )
 			{
-				case GL_VERTEX_SHADER:
+				case gl_vertex_shader:
 				{
 					return "Vertex";
 				}
 
-				case GL_FRAGMENT_SHADER:
+				case gl_fragment_shader:
 				{
 					return "Fragment";
 				}
 				
-				case GL_GEOMETRY_SHADER:
+				case gl_geometry_shader:
 				{
 					return "Geometry";
 				}
 
-				case GL_TESS_CONTROL_SHADER:
+				case gl_tess_control_shader:
 				{
 					return "Tessellation Control";
 				}
 
-				case GL_TESS_EVALUATION_SHADER:
+				case gl_tess_evaluation_shader:
 				{
 					return "Tessellation Evaluation";
 				}
