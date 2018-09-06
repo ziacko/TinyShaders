@@ -237,7 +237,8 @@ namespace TinyShaders
 				if (!source.empty())
 				{
 					handle = glCreateShader(static_cast<unsigned int>(type));
-					glShaderSource(handle, 1, (const char**)&source, 0);
+					const char* str = source.c_str();
+					glShaderSource(handle, 1, (const char**)&str, 0);
 					glCompileShader(handle);
 
 					glGetShaderiv(handle, gl_compile_status, &successful);
@@ -656,6 +657,7 @@ namespace TinyShaders
 										outPrograms->push_back(newShaderProgram.get());
 									}
 									shaderPrograms.push_back(std::move(newShaderProgram));
+									continue;
 								}
 								fclose(pConfigFile); 
 								return error_t::shaderProgramCompileFailed;
