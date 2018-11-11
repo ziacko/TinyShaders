@@ -450,7 +450,6 @@ namespace TinyShaders
 			}
 			return error_t::shaderProgramAlreadyExists;
 		}
-
 	};
 
 	class shaderManager
