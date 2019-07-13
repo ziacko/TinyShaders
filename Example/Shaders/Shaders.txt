@@ -1,4 +1,4 @@
-1
+2
 TestShader
 2
 Position
@@ -12,3 +12,11 @@ Vertex
 FragmentShader
 Fragment
 ./Shaders/pixel.glsl
+
+compShader
+0
+0
+1
+ComputeShader
+Compute
+./shaders/comp.glsl

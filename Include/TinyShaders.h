@@ -196,8 +196,8 @@ namespace TinyShaders
 
 	public:
 
-		std::string		name;			/**<The name of the shader component */
-		std::string		filePath;		/**<The FilePath of the component*/
+		std::string			name;			/**<The name of the shader component */
+		std::string			filePath;		/**<The FilePath of the component*/
 		GLuint				handle;			/**<The handle to the shader in OpenGL*/
 		shaderType_t		type;			/**<The type of shader ( Vertex, Fragment, etc.)*/
 		GLboolean			isCompiled;		/**<Whether the shader has been compiled*/
@@ -217,10 +217,11 @@ namespace TinyShaders
 			isCompiled = GL_FALSE;
 			Compile(buffer);
 			filePath = nullptr;
-
 		}
+		
 		tShader() :
 		handle(0), type(shaderType_t::vertex), isCompiled(false) {}
+
 		~tShader() {}
 
 		/*
@@ -313,8 +314,8 @@ namespace TinyShaders
 	public:
 
 		std::string						name;				/**< The name of the shader program */
-		GLuint								handle;				/**< The OpenGL handle to the shader program */
-		GLboolean							isCompiled;			/**< Whether the shader program has been linked successfully */
+		GLuint							handle;				/**< The OpenGL handle to the shader program */
+		GLboolean						isCompiled;			/**< Whether the shader program has been linked successfully */
 		std::vector< std::string >		inputs;				/**< The inputs of the shader program as a vector of strings */
 		std::vector< std::string >		outputs;			/**< The outputs of the shader program as a vector of strings */
 		std::vector< tShader* >			shaders;			/**< The components that the shader program is comprised of as a vector */
@@ -356,6 +357,19 @@ namespace TinyShaders
 
 		tShaderProgram(std::string programName, GLuint programHandle) :
 			name(programName), handle(programHandle), isCompiled(false) {}
+
+		tShaderProgram(std::string programName, tShader* computeShader, bool saveBinary = false)
+			:name(programName)
+		{
+			shaders.push_back(computeShader);
+			isCompiled = false;
+
+			if (Compile(saveBinary) != error_t::success)
+			{
+				exit(0);
+			}
+
+		}
 
 		~tShaderProgram() {}
 
@@ -450,7 +464,6 @@ namespace TinyShaders
 			}
 			return error_t::shaderProgramAlreadyExists;
 		}
-
 	};
 
 	class shaderManager
@@ -573,7 +586,7 @@ namespace TinyShaders
 							fscanf( pConfigFile, "%s\n", programName );
 							printf( "%s\n", programName );
 
-							//this is an anti-trolling measure. If a shader with the same name already exists the don't bother making a new one.
+							//this is an anti-trolling measure. If a shader with the same name already exists then don't bother making a new one.
 							if ( !ShaderProgramExists( programName ) )
 							{
 								//get the number of shader inputs
@@ -639,7 +652,7 @@ namespace TinyShaders
 
 									else
 									{
-										//tell scanf to skip a couple lines. very unsafe!
+										//tell fscanf to skip a couple lines. very unsafe!
 										fscanf( pConfigFile, "%*[^\n]\n %*[^\n]\n", nullptr );
 										//if shader already exists then add an existing one from storage, it should already be compiled
 										tShader* newShader = nullptr;
@@ -881,6 +894,29 @@ namespace TinyShaders
 					return error_t::shaderProgramLoadFailed;
 			}
 
+			std::error_code BuildProgramFromShaders(const std::string& shaderName,
+				const std::string& computeShaderName,
+				tShaderProgram* outProgram = nullptr,
+				bool saveBinary = false)
+			{
+				std::vector< tShader* > shaderList;
+				tShader* computeShader = nullptr;
+				GetShaderByName(computeShaderName, computeShader);
+
+				shaderList.push_back(computeShader);
+				std::unique_ptr<tShaderProgram> newShaderProgram(new tShaderProgram(shaderName, shaderList[0], saveBinary));
+				if (newShaderProgram->isCompiled)
+				{
+					shaderPrograms.push_back(std::move(newShaderProgram));
+					if (outProgram != nullptr)
+					{
+						outProgram = shaderPrograms.back().get();
+					}
+					return error_t::success;
+				}
+				return error_t::shaderProgramLoadFailed;
+			}
+
 			/*
 			* check if the shader program exists in TinyShaders.( has it been loaded and initialized? )
 			*/
@@ -992,7 +1028,7 @@ namespace TinyShaders
 						return error_t::success;
 					}
 
-					if (typeString.compare("Compute Shader") == 0)
+					if (typeString.compare("Compute") == 0)
 					{
 						shaderTypeOut = shaderType_t::compute;
 						return error_t::success;
