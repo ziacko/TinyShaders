@@ -1,4 +1,4 @@
-2
+1
 TestShader
 2
 Position
@@ -7,16 +7,8 @@ UV
 OutColor
 2
 VertexShader
-Vertex
+vertex
 ./Shaders/vertex.glsl
 FragmentShader
-Fragment
+fragment
 ./Shaders/pixel.glsl
-
-compShader
-0
-0
-1
-ComputeShader
-Compute
-./shaders/comp.glsl
