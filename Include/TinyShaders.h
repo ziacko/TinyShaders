@@ -352,6 +352,11 @@ namespace TinyShaders
 		}
 
 		~shaderProgram_t() = default;
+
+		inline void Use() const
+		{
+			glUseProgram(handle);
+		}
 	};
 
 	/*
