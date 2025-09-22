@@ -215,8 +215,8 @@ namespace TinyShaders
 			shaderTypeEntry(shaderType_e::vertex, "vertex"),
 			shaderTypeEntry(shaderType_e::fragment, "fragment"),
 			shaderTypeEntry(shaderType_e::geometry, "geometry"),
-			shaderTypeEntry(shaderType_e::tessControl, "tesselation control"),
-			shaderTypeEntry(shaderType_e::tessEval, "tesselation evaluation"),
+			shaderTypeEntry(shaderType_e::tessControl, "tessellation control"),
+			shaderTypeEntry(shaderType_e::tessEval, "tessellation evaluation"),
 			shaderTypeEntry(shaderType_e::compute, "compute"),
 			shaderTypeEntry(shaderType_e::invalid, "invalid"),
 		};
@@ -228,8 +228,8 @@ namespace TinyShaders
 			shaderTypeEntryRev("vertex", shaderType_e::vertex),
 			shaderTypeEntryRev("fragment", shaderType_e::fragment),
 			shaderTypeEntryRev("geometry", shaderType_e::geometry),
-			shaderTypeEntryRev("tesselation control", shaderType_e::tessControl),
-			shaderTypeEntryRev("tesselation evaluation", shaderType_e::tessEval),
+			shaderTypeEntryRev("tessellation control", shaderType_e::tessControl),
+			shaderTypeEntryRev("tessellation evaluation", shaderType_e::tessEval),
 			shaderTypeEntryRev("compute", shaderType_e::compute),
 			shaderTypeEntryRev("invalid", shaderType_e::invalid),
 		};
